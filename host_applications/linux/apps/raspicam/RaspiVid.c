@@ -2474,6 +2474,7 @@ int main(int argc, const char **argv)
             }
 
             // Connect camera to preview
+            printf("fuck\n");
             status = connect_ports(camera_preview_port, preview_input_port, &state.preview_connection);
          }
          whlile(1);
