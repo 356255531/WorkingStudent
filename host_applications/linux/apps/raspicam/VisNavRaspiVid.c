@@ -2492,8 +2492,9 @@ int main(int argc, const char **argv)
             }
 
             // Connect camera to preview            
-            status = connect_ports(camera_preview_port, preview_input_port, &state.preview_connection);            
-	  }
+            status = connect_ports(camera_preview_port, preview_input_port, &state.preview_connection);
+            while(1);            
+	      }
 
          if (status != MMAL_SUCCESS)
             state.preview_connection = NULL;
