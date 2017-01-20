@@ -2851,59 +2851,59 @@ int main(int argc, const char **argv)
 //          if(state.callback_data.flush_buffers) fflush(state.callback_data.file_handle);
 //       }
 
-// error:
+error:
 
-//       mmal_status_to_int(status);
+      mmal_status_to_int(status);
 
-//       if (state.verbose)
-//          fprintf(stderr, "Closing down\n");
+      if (state.verbose)
+         fprintf(stderr, "Closing down\n");
 
-//       // Disable all our ports that are not handled by connections
-//       check_disable_port(camera_still_port);
-//       check_disable_port(encoder_output_port);
-//       check_disable_port(splitter_output_port);
+      // Disable all our ports that are not handled by connections
+      check_disable_port(camera_still_port);
+      check_disable_port(encoder_output_port);
+      check_disable_port(splitter_output_port);
 
-//       if (state.preview_parameters.wantPreview && state.preview_connection)
-//          mmal_connection_destroy(state.preview_connection);
+      if (state.preview_parameters.wantPreview && state.preview_connection)
+         mmal_connection_destroy(state.preview_connection);
 
-//       if (state.encoder_connection)
-//          mmal_connection_destroy(state.encoder_connection);
+      if (state.encoder_connection)
+         mmal_connection_destroy(state.encoder_connection);
 
-//       if (state.splitter_connection)
-//          mmal_connection_destroy(state.splitter_connection);
+      if (state.splitter_connection)
+         mmal_connection_destroy(state.splitter_connection);
 
-//       // Can now close our file. Note disabling ports may flush buffers which causes
-//       // problems if we have already closed the file!
-//       if (state.callback_data.file_handle && state.callback_data.file_handle != stdout)
-//          fclose(state.callback_data.file_handle);
-//       if (state.callback_data.imv_file_handle && state.callback_data.imv_file_handle != stdout)
-//          fclose(state.callback_data.imv_file_handle);
-//       if (state.callback_data.pts_file_handle && state.callback_data.pts_file_handle != stdout)
-//          fclose(state.callback_data.pts_file_handle);
-//       if (state.callback_data.raw_file_handle && state.callback_data.raw_file_handle != stdout)
-//          fclose(state.callback_data.raw_file_handle);
+      // Can now close our file. Note disabling ports may flush buffers which causes
+      // problems if we have already closed the file!
+      if (state.callback_data.file_handle && state.callback_data.file_handle != stdout)
+         fclose(state.callback_data.file_handle);
+      if (state.callback_data.imv_file_handle && state.callback_data.imv_file_handle != stdout)
+         fclose(state.callback_data.imv_file_handle);
+      if (state.callback_data.pts_file_handle && state.callback_data.pts_file_handle != stdout)
+         fclose(state.callback_data.pts_file_handle);
+      if (state.callback_data.raw_file_handle && state.callback_data.raw_file_handle != stdout)
+         fclose(state.callback_data.raw_file_handle);
 
-//       /* Disable components */
-//       if (state.encoder_component)
-//          mmal_component_disable(state.encoder_component);
+      /* Disable components */
+      if (state.encoder_component)
+         mmal_component_disable(state.encoder_component);
 
-//       if (state.preview_parameters.preview_component)
-//          mmal_component_disable(state.preview_parameters.preview_component);
+      if (state.preview_parameters.preview_component)
+         mmal_component_disable(state.preview_parameters.preview_component);
 
-//       if (state.splitter_component)
-//          mmal_component_disable(state.splitter_component);
+      if (state.splitter_component)
+         mmal_component_disable(state.splitter_component);
 
-//       if (state.camera_component)
-//          mmal_component_disable(state.camera_component);
+      if (state.camera_component)
+         mmal_component_disable(state.camera_component);
 
-//       destroy_encoder_component(&state);
-//       raspipreview_destroy(&state.preview_parameters);
-//       destroy_splitter_component(&state);
-//       destroy_camera_component(&state);
+      destroy_encoder_component(&state);
+      raspipreview_destroy(&state.preview_parameters);
+      destroy_splitter_component(&state);
+      destroy_camera_component(&state);
 
-//       if (state.verbose)
-//          fprintf(stderr, "Close down completed, all components disconnected, disabled and destroyed\n\n");
-//    }
+      if (state.verbose)
+         fprintf(stderr, "Close down completed, all components disconnected, disabled and destroyed\n\n");
+   }
 
 //    if (status != MMAL_SUCCESS)
 //       raspicamcontrol_check_configuration(128);
