@@ -2522,21 +2522,21 @@ int main(int argc, const char **argv)
          }
       }
 
-      if (status == MMAL_SUCCESS)
-      {
-         if (state.verbose)
-            fprintf(stderr, "Connecting camera video port to encoder input port\n");
+      // if (status == MMAL_SUCCESS)
+      // {
+      //    if (state.verbose)
+      //       fprintf(stderr, "Connecting camera video port to encoder input port\n");
 
-         // Now connect the camera to the encoder
-         status = connect_ports(camera_video_port, encoder_input_port, &state.encoder_connection);
+      //    // Now connect the camera to the encoder
+      //    status = connect_ports(camera_video_port, encoder_input_port, &state.encoder_connection);
 
-         if (status != MMAL_SUCCESS)
-         {
-            state.encoder_connection = NULL;
-            vcos_log_error("%s: Failed to connect camera video port to encoder input", __func__);
-            goto error;
-         }
-      }
+      //    if (status != MMAL_SUCCESS)
+      //    {
+      //       state.encoder_connection = NULL;
+      //       vcos_log_error("%s: Failed to connect camera video port to encoder input", __func__);
+      //       goto error;
+      //    }
+      // }
 
       if (status == MMAL_SUCCESS)
       {
