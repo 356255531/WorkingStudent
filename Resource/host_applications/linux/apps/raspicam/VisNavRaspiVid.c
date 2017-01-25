@@ -13,7 +13,7 @@ modification, are permitted provided that the following conditions are met:
     * Neither the name of the copyright holder nor the
       names of its contributors may be used to endorse or promote products
       derived from this software without specific prior written permission.
-
+filename
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -366,7 +366,7 @@ static COMMAND_LIST cmdline_commands[] =
    { CommandSavePTS,       "-save-pts",   "pts","Save Timestamps to file for mkvmerge", 1 },
    { CommandCodec,         "-codec",      "cd", "Specify the codec to use - H264 (default) or MJPEG", 1 },
    { CommandLevel,         "-level",      "lev","Specify H264 level to use for encoding", 1},
-   { CommandRaw,           "-raw",        "r",  "Output filename <filename> for raw video", 1 },
+   { CommandRaw,           "-raw",         "r",  "Output filename <filename> for raw video", 1 },
    { CommandRawFormat,     "-raw-format", "rf", "Specify output format for raw video. Default is yuv", 1},
 };
 
@@ -2457,7 +2457,7 @@ int main(int argc, const char **argv)
          splitter_preview_port = state.splitter_component->output[SPLITTER_PREVIEW_PORT];
       }
 
-      if (state.preview_parameters.wantPreview )
+      if (state.preview_parameters.wantPreview)
       {
          if (state.raw_output)
          {
@@ -2491,10 +2491,9 @@ int main(int argc, const char **argv)
                fprintf(stderr, "Starting video preview\n");
             }
 
-            // Connect camera to preview            
+            // Connect camera to preview   
             status = connect_ports(camera_preview_port, preview_input_port, &state.preview_connection);            
 	      }
-
          if (status != MMAL_SUCCESS)
             state.preview_connection = NULL;
       }
@@ -2538,298 +2537,298 @@ int main(int argc, const char **argv)
          }
       }
 
-      // if (status == MMAL_SUCCESS)
-      // {
-      //    // Set up our userdata - this is passed though to the callback where we need the information.
-      //    state.callback_data.pstate = &state;
-      //    state.callback_data.abort = 0;
+      if (status == MMAL_SUCCESS)
+      {
+         // Set up our userdata - this is passed though to the callback where we need the information.
+         state.callback_data.pstate = &state;
+         state.callback_data.abort = 0;
 
-      //    if (state.raw_output)
-      //    {
-      //       splitter_output_port->userdata = (struct MMAL_PORT_USERDATA_T *)&state.callback_data;
+         if (state.raw_output)
+         {
+            splitter_output_port->userdata = (struct MMAL_PORT_USERDATA_T *)&state.callback_data;
 
-      //       if (state.verbose)
-      //          fprintf(stderr, "Enabling splitter output port\n");
+            if (state.verbose)
+               fprintf(stderr, "Enabling splitter output port\n");
 
-      //       // Enable the splitter output port and tell it its callback function
-      //       status = mmal_port_enable(splitter_output_port, splitter_buffer_callback);
+            // Enable the splitter output port and tell it its callback function
+            status = mmal_port_enable(splitter_output_port, splitter_buffer_callback);
 
-      //       if (status != MMAL_SUCCESS)
-      //       {
-      //          vcos_log_error("%s: Failed to setup splitter output port", __func__);
-      //          goto error;
-      //       }
-      //    }
+            if (status != MMAL_SUCCESS)
+            {
+               vcos_log_error("%s: Failed to setup splitter output port", __func__);
+               goto error;
+            }
+         }
 
-      //    state.callback_data.file_handle = NULL;
+         state.callback_data.file_handle = NULL;
 
-      //    if (state.filename)
-      //    {
-      //       if (state.filename[0] == '-')
-      //       {
-      //          state.callback_data.file_handle = stdout;
+         if (state.filename)
+         {
+            if (state.filename[0] == '-')
+            {
+               state.callback_data.file_handle = stdout;
 
-      //          // Ensure we don't upset the output stream with diagnostics/info
-      //          state.verbose = 0;
-      //       }
-      //       else
-      //       {
-      //          state.callback_data.file_handle = open_filename(&state, state.filename);
-      //       }
+               // Ensure we don't upset the output stream with diagnostics/info
+               state.verbose = 0;
+            }
+            else
+            {
+               state.callback_data.file_handle = open_filename(&state, state.filename);
+            }
 
-      //       if (!state.callback_data.file_handle)
-      //       {
-      //          // Notify user, carry on but discarding encoded output buffers
-      //          vcos_log_error("%s: Error opening output file: %s\nNo output file will be generated\n", __func__, state.filename);
-      //       }
-      //    }
+            if (!state.callback_data.file_handle)
+            {
+               // Notify user, carry on but discarding encoded output buffers
+               vcos_log_error("%s: Error opening output file: %s\nNo output file will be generated\n", __func__, state.filename);
+            }
+         }
 
-      //    state.callback_data.imv_file_handle = NULL;
+         state.callback_data.imv_file_handle = NULL;
 
-      //    if (state.imv_filename)
-      //    {
-      //       if (state.imv_filename[0] == '-')
-      //       {
-      //          state.callback_data.imv_file_handle = stdout;
-      //       }
-      //       else
-      //       {
-      //          state.callback_data.imv_file_handle = open_filename(&state, state.imv_filename);
-      //       }
+         if (state.imv_filename)
+         {
+            if (state.imv_filename[0] == '-')
+            {
+               state.callback_data.imv_file_handle = stdout;
+            }
+            else
+            {
+               state.callback_data.imv_file_handle = open_filename(&state, state.imv_filename);
+            }
 
-      //       if (!state.callback_data.imv_file_handle)
-      //       {
-      //          // Notify user, carry on but discarding encoded output buffers
-      //          fprintf(stderr, "Error opening output file: %s\nNo output file will be generated\n",state.imv_filename);
-      //          state.inlineMotionVectors=0;
-      //       }
-      //    }
+            if (!state.callback_data.imv_file_handle)
+            {
+               // Notify user, carry on but discarding encoded output buffers
+               fprintf(stderr, "Error opening output file: %s\nNo output file will be generated\n",state.imv_filename);
+               state.inlineMotionVectors=0;
+            }
+         }
 
-      //    state.callback_data.pts_file_handle = NULL;
+         state.callback_data.pts_file_handle = NULL;
 
-      //    if (state.pts_filename)
-      //    {
-      //       if (state.pts_filename[0] == '-')
-      //       {
-      //          state.callback_data.pts_file_handle = stdout;
-      //       }
-      //       else
-      //       {
-      //          state.callback_data.pts_file_handle = open_filename(&state, state.pts_filename);
-      //          if (state.callback_data.pts_file_handle) /* save header for mkvmerge */
-      //             fprintf(state.callback_data.pts_file_handle, "# timecode format v2\n");
-      //       }
+         if (state.pts_filename)
+         {
+            if (state.pts_filename[0] == '-')
+            {
+               state.callback_data.pts_file_handle = stdout;
+            }
+            else
+            {
+               state.callback_data.pts_file_handle = open_filename(&state, state.pts_filename);
+               if (state.callback_data.pts_file_handle) /* save header for mkvmerge */
+                  fprintf(state.callback_data.pts_file_handle, "# timecode format v2\n");
+            }
 
-      //       if (!state.callback_data.pts_file_handle)
-      //       {
-      //          // Notify user, carry on but discarding encoded output buffers
-      //          fprintf(stderr, "Error opening output file: %s\nNo output file will be generated\n",state.pts_filename);
-      //          state.save_pts=0;
-      //       }
-      //    }
+            if (!state.callback_data.pts_file_handle)
+            {
+               // Notify user, carry on but discarding encoded output buffers
+               fprintf(stderr, "Error opening output file: %s\nNo output file will be generated\n",state.pts_filename);
+               state.save_pts=0;
+            }
+         }
 
-      //    state.callback_data.raw_file_handle = NULL;
+         state.callback_data.raw_file_handle = NULL;
 
-      //    if (state.raw_filename)
-      //    {
-      //       if (state.raw_filename[0] == '-')
-      //       {
-      //          state.callback_data.raw_file_handle = stdout;
-      //       }
-      //       else
-      //       {
-      //          state.callback_data.raw_file_handle = open_filename(&state, state.raw_filename);
-      //       }
+         if (state.raw_filename)
+         {
+            if (state.raw_filename[0] == '-')
+            {
+               state.callback_data.raw_file_handle = stdout;
+            }
+            else
+            {
+               state.callback_data.raw_file_handle = open_filename(&state, state.raw_filename);
+            }
 
-      //       if (!state.callback_data.raw_file_handle)
-      //       {
-      //          // Notify user, carry on but discarding encoded output buffers
-      //          fprintf(stderr, "Error opening output file: %s\nNo output file will be generated\n", state.raw_filename);
-      //          state.raw_output = 0;
-      //       }
-      //    }
+            if (!state.callback_data.raw_file_handle)
+            {
+               // Notify user, carry on but discarding encoded output buffers
+               fprintf(stderr, "Error opening output file: %s\nNo output file will be generated\n", state.raw_filename);
+               state.raw_output = 0;
+            }
+         }
 
-      //    if(state.bCircularBuffer)
-      //    {
-      //       if(state.bitrate == 0)
-      //       {
-      //          vcos_log_error("%s: Error circular buffer requires constant bitrate and small intra period\n", __func__);
-      //          goto error;
-      //       }
-      //       else if(state.timeout == 0)
-      //       {
-      //          vcos_log_error("%s: Error, circular buffer size is based on timeout must be greater than zero\n", __func__);
-      //          goto error;
-      //       }
-      //       else if(state.waitMethod != WAIT_METHOD_KEYPRESS && state.waitMethod != WAIT_METHOD_SIGNAL)
-      //       {
-      //          vcos_log_error("%s: Error, Circular buffer mode requires either keypress (-k) or signal (-s) triggering\n", __func__);
-      //          goto error;
-      //       }
-      //       else if(!state.callback_data.file_handle)
-      //       {
-      //          vcos_log_error("%s: Error require output file (or stdout) for Circular buffer mode\n", __func__);
-      //          goto error;
-      //       }
-      //       else
-      //       {
-      //          int count = state.bitrate * (state.timeout / 1000) / 8;
+         if(state.bCircularBuffer)
+         {
+            if(state.bitrate == 0)
+            {
+               vcos_log_error("%s: Error circular buffer requires constant bitrate and small intra period\n", __func__);
+               goto error;
+            }
+            else if(state.timeout == 0)
+            {
+               vcos_log_error("%s: Error, circular buffer size is based on timeout must be greater than zero\n", __func__);
+               goto error;
+            }
+            else if(state.waitMethod != WAIT_METHOD_KEYPRESS && state.waitMethod != WAIT_METHOD_SIGNAL)
+            {
+               vcos_log_error("%s: Error, Circular buffer mode requires either keypress (-k) or signal (-s) triggering\n", __func__);
+               goto error;
+            }
+            else if(!state.callback_data.file_handle)
+            {
+               vcos_log_error("%s: Error require output file (or stdout) for Circular buffer mode\n", __func__);
+               goto error;
+            }
+            else
+            {
+               int count = state.bitrate * (state.timeout / 1000) / 8;
 
-      //          state.callback_data.cb_buff = (char *) malloc(count);
-      //          if(state.callback_data.cb_buff == NULL)
-      //          {
-      //             vcos_log_error("%s: Unable to allocate circular buffer for %d seconds at %.1f Mbits\n", __func__, state.timeout / 1000, (double)state.bitrate/1000000.0);
-      //             goto error;
-      //          }
-      //          else
-      //          {
-      //             state.callback_data.cb_len = count;
-      //             state.callback_data.cb_wptr = 0;
-      //             state.callback_data.cb_wrap = 0;
-      //             state.callback_data.cb_data = 0;
-      //             state.callback_data.iframe_buff_wpos = 0;
-      //             state.callback_data.iframe_buff_rpos = 0;
-      //             state.callback_data.header_wptr = 0;
-      //          }
-      //       }
-      //    }
+               state.callback_data.cb_buff = (char *) malloc(count);
+               if(state.callback_data.cb_buff == NULL)
+               {
+                  vcos_log_error("%s: Unable to allocate circular buffer for %d seconds at %.1f Mbits\n", __func__, state.timeout / 1000, (double)state.bitrate/1000000.0);
+                  goto error;
+               }
+               else
+               {
+                  state.callback_data.cb_len = count;
+                  state.callback_data.cb_wptr = 0;
+                  state.callback_data.cb_wrap = 0;
+                  state.callback_data.cb_data = 0;
+                  state.callback_data.iframe_buff_wpos = 0;
+                  state.callback_data.iframe_buff_rpos = 0;
+                  state.callback_data.header_wptr = 0;
+               }
+            }
+         }
 
-      //    // Set up our userdata - this is passed though to the callback where we need the information.
-      //    encoder_output_port->userdata = (struct MMAL_PORT_USERDATA_T *)&state.callback_data;
+         // Set up our userdata - this is passed though to the callback where we need the information.
+         encoder_output_port->userdata = (struct MMAL_PORT_USERDATA_T *)&state.callback_data;
 
-      //    if (state.verbose)
-      //       fprintf(stderr, "Enabling encoder output port\n");
+         if (state.verbose)
+            fprintf(stderr, "Enabling encoder output port\n");
 
-      //    // Enable the encoder output port and tell it its callback function
-      //    status = mmal_port_enable(encoder_output_port, encoder_buffer_callback);
+         // Enable the encoder output port and tell it its callback function
+         status = mmal_port_enable(encoder_output_port, encoder_buffer_callback);
 
-      //    if (status != MMAL_SUCCESS)
-      //    {
-      //       vcos_log_error("Failed to setup encoder output");
-      //       goto error;
-      //    }
+         if (status != MMAL_SUCCESS)
+         {
+            vcos_log_error("Failed to setup encoder output");
+            goto error;
+         }
 
-      //    if (state.demoMode)
-      //    {
-      //       // Run for the user specific time..
-      //       int num_iterations = state.timeout / state.demoInterval;
-      //       int i;
+         if (state.demoMode)
+         {
+            // Run for the user specific time..
+            int num_iterations = state.timeout / state.demoInterval;
+            int i;
 
-      //       if (state.verbose)
-      //          fprintf(stderr, "Running in demo mode\n");
+            if (state.verbose)
+               fprintf(stderr, "Running in demo mode\n");
 
-      //       for (i=0;state.timeout == 0 || i<num_iterations;i++)
-      //       {
-      //          raspicamcontrol_cycle_test(state.camera_component);
-      //          vcos_sleep(state.demoInterval);
-      //       }
-      //    }
-      //    else
-      //    {
-      //       // Only encode stuff if we have a filename and it opened
-      //       // Note we use the copy in the callback, as the call back MIGHT change the file handle
-      //       if (state.callback_data.file_handle)
-      //       {
-      //          int running = 1;
+            for (i=0;state.timeout == 0 || i<num_iterations;i++)
+            {
+               raspicamcontrol_cycle_test(state.camera_component);
+               vcos_sleep(state.demoInterval);
+            }
+         }
+         else
+         {
+            // Only encode stuff if we have a filename and it opened
+            // Note we use the copy in the callback, as the call back MIGHT change the file handle
+            if (state.callback_data.file_handle)
+            {
+               int running = 1;
 
-      //          // Send all the buffers to the encoder output port
-      //          {
-      //             int num = mmal_queue_length(state.encoder_pool->queue);
-      //             int q;
-      //             for (q=0;q<num;q++)
-      //             {
-      //                MMAL_BUFFER_HEADER_T *buffer = mmal_queue_get(state.encoder_pool->queue);
+               // Send all the buffers to the encoder output port
+               {
+                  int num = mmal_queue_length(state.encoder_pool->queue);
+                  int q;
+                  for (q=0;q<num;q++)
+                  {
+                     MMAL_BUFFER_HEADER_T *buffer = mmal_queue_get(state.encoder_pool->queue);
 
-      //                if (!buffer)
-      //                   vcos_log_error("Unable to get a required buffer %d from pool queue", q);
+                     if (!buffer)
+                        vcos_log_error("Unable to get a required buffer %d from pool queue", q);
 
-      //                if (mmal_port_send_buffer(encoder_output_port, buffer)!= MMAL_SUCCESS)
-      //                   vcos_log_error("Unable to send a buffer to encoder output port (%d)", q);
-      //             }
-      //          }
+                     if (mmal_port_send_buffer(encoder_output_port, buffer)!= MMAL_SUCCESS)
+                        vcos_log_error("Unable to send a buffer to encoder output port (%d)", q);
+                  }
+               }
 
-      //          // Send all the buffers to the splitter output port
-      //          if (state.raw_output) {
-      //             int num = mmal_queue_length(state.splitter_pool->queue);
-      //             int q;
-      //             for (q = 0; q < num; q++)
-      //             {
-      //                MMAL_BUFFER_HEADER_T *buffer = mmal_queue_get(state.splitter_pool->queue);
+               // Send all the buffers to the splitter output port
+               if (state.raw_output) {
+                  int num = mmal_queue_length(state.splitter_pool->queue);
+                  int q;
+                  for (q = 0; q < num; q++)
+                  {
+                     MMAL_BUFFER_HEADER_T *buffer = mmal_queue_get(state.splitter_pool->queue);
 
-      //                if (!buffer)
-      //                   vcos_log_error("Unable to get a required buffer %d from pool queue", q);
+                     if (!buffer)
+                        vcos_log_error("Unable to get a required buffer %d from pool queue", q);
 
-      //                if (mmal_port_send_buffer(splitter_output_port, buffer)!= MMAL_SUCCESS)
-      //                   vcos_log_error("Unable to send a buffer to splitter output port (%d)", q);
-      //             }
-      //          }
+                     if (mmal_port_send_buffer(splitter_output_port, buffer)!= MMAL_SUCCESS)
+                        vcos_log_error("Unable to send a buffer to splitter output port (%d)", q);
+                  }
+               }
 
-      //          int initialCapturing=state.bCapturing;
-      //          while (running)
-      //          {
-      //             // Change state
+               int initialCapturing=state.bCapturing;
+               while (running)
+               {
+                  // Change state
 
-      //             state.bCapturing = !state.bCapturing;
+                  state.bCapturing = !state.bCapturing;
 
-      //             if (mmal_port_parameter_set_boolean(camera_video_port, MMAL_PARAMETER_CAPTURE, state.bCapturing) != MMAL_SUCCESS)
-      //             {
-      //                // How to handle?
-      //             }
+                  if (mmal_port_parameter_set_boolean(camera_video_port, MMAL_PARAMETER_CAPTURE, state.bCapturing) != MMAL_SUCCESS)
+                  {
+                     // How to handle?
+                  }
 
-      //             // In circular buffer mode, exit and save the buffer (make sure we do this after having paused the capture
-      //             if(state.bCircularBuffer && !state.bCapturing)
-      //             {
-      //                break;
-      //             }
+                  // In circular buffer mode, exit and save the buffer (make sure we do this after having paused the capture
+                  if(state.bCircularBuffer && !state.bCapturing)
+                  {
+                     break;
+                  }
 
-      //             if (state.verbose)
-      //             {
-      //                if (state.bCapturing)
-      //                   fprintf(stderr, "Starting video capture\n");
-      //                else
-      //                   fprintf(stderr, "Pausing video capture\n");
-      //             }
+                  if (state.verbose)
+                  {
+                     if (state.bCapturing)
+                        fprintf(stderr, "Starting video capture\n");
+                     else
+                        fprintf(stderr, "Pausing video capture\n");
+                  }
 
-      //             if(state.splitWait)
-      //             {
-      //                if(state.bCapturing)
-      //                {
-      //                   if (mmal_port_parameter_set_boolean(encoder_output_port, MMAL_PARAMETER_VIDEO_REQUEST_I_FRAME, 1) != MMAL_SUCCESS)
-      //                   {
-      //                      vcos_log_error("failed to request I-FRAME");
-      //                   }
-      //                }
-      //                else
-      //                {
-      //                   if(!initialCapturing)
-      //                      state.splitNow=1;
-      //                }
-      //                initialCapturing=0;
-      //             }
-      //             running = wait_for_next_change(&state);
-      //          }
+                  if(state.splitWait)
+                  {
+                     if(state.bCapturing)
+                     {
+                        if (mmal_port_parameter_set_boolean(encoder_output_port, MMAL_PARAMETER_VIDEO_REQUEST_I_FRAME, 1) != MMAL_SUCCESS)
+                        {
+                           vcos_log_error("failed to request I-FRAME");
+                        }
+                     }
+                     else
+                     {
+                        if(!initialCapturing)
+                           state.splitNow=1;
+                     }
+                     initialCapturing=0;
+                  }
+                  running = wait_for_next_change(&state);
+               }
 
-      //          if (state.verbose)
-      //             fprintf(stderr, "Finished capture\n");
-      //       }
-      //       else
-      //       {
-      //          if (state.timeout)
-      //             vcos_sleep(state.timeout);
-      //          else
-      //          {
-      //             // timeout = 0 so run forever
-      //             while(1)
-      //                vcos_sleep(ABORT_INTERVAL);
-      //          }
-      //       }
-      //    }
-      // }
-      // else
-      // {
-      //    mmal_status_to_int(status);
-      //    vcos_log_error("%s: Failed to connect camera to preview", __func__);
-      // }
+               if (state.verbose)
+                  fprintf(stderr, "Finished capture\n");
+            }
+            else
+            {
+               if (state.timeout)
+                  vcos_sleep(state.timeout);
+               else
+               {
+                  // timeout = 0 so run forever
+                  while(1)
+                     vcos_sleep(ABORT_INTERVAL);
+               }
+            }
+         }
+      }
+      else
+      {
+         mmal_status_to_int(status);
+         vcos_log_error("%s: Failed to connect camera to preview", __func__);
+      }
 
       if(state.bCircularBuffer)
       {
