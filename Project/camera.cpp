@@ -1,5 +1,4 @@
 /*
-Chris Cummings
 This is wraps up the camera system in a simple StartCamera, StopCamera and ReadFrame api to read 
 data from the feed. Based on parts of raspivid, and the work done by Pierre Raus at 
 http://raufast.org/download/camcv_vid0.c to get the camera feeding into opencv. It 
@@ -50,8 +49,6 @@ void StopCamera()
 CCamera::CCamera()
 {
 	CameraComponent = NULL;    
-//	SplitterComponent = NULL;
-//	VidToSplitConn = NULL;
 	Output = NULL;
 }
 
@@ -195,60 +192,6 @@ MMAL_COMPONENT_T* CCamera::CreateCameraComponentAndSetupPorts()
 	return camera;
 }
 
-//MMAL_COMPONENT_T* CCamera::CreateSplitterComponentAndSetupPorts(MMAL_PORT_T* video_output_port)
-//{
-//	MMAL_COMPONENT_T *splitter = 0;
-//	MMAL_ES_FORMAT_T *format;
-//	MMAL_PORT_T *input_port = NULL, *output_port = NULL;
-//	MMAL_STATUS_T status;
-//
-//	//create the camera component
-//	status = mmal_component_create(MMAL_COMPONENT_DEFAULT_VIDEO_SPLITTER, &splitter);
-//	if (status != MMAL_SUCCESS)
-//	{
-//		printf("Failed to create splitter component\n");
-//		goto error;
-//	}
-//
-//	//check we have output ports
-//	if (splitter->output_num != 4 || splitter->input_num != 1)
-//	{
-//		printf("Splitter doesn't have correct ports: %d, %d\n",splitter->input_num,splitter->output_num);
-//		goto error;
-//	}
-//
-//	//get the ports
-//	input_port = splitter->input[0];
-//	mmal_format_copy(input_port->format,video_output_port->format);
-//	input_port->buffer_num = 3;
-//	status = mmal_port_format_commit(input_port);
-//	if (status != MMAL_SUCCESS)
-//	{
-//		printf("Couldn't set resizer input port format : error %d", status);
-//		goto error;
-//	}
-//
-//	for(int i = 0; i < splitter->output_num; i++)
-//	{
-//		output_port = splitter->output[i];
-//		output_port->buffer_num = 3;
-//		mmal_format_copy(output_port->format,input_port->format);
-//		status = mmal_port_format_commit(output_port);
-//		if (status != MMAL_SUCCESS)
-//		{
-//			printf("Couldn't set resizer output port format : error %d", status);
-//			goto error;
-//		}
-//	}
-//
-//	return splitter;
-//
-//error:
-//	if(splitter)
-//		mmal_component_destroy(splitter);
-//	return NULL;
-//}
-
 bool CCamera::Init(int width, int height, int frame_rate, bool do_argb_conversion)
 {
 	//init broadcom host - QUESTION: can this be called more than once??
@@ -278,49 +221,12 @@ bool CCamera::Init(int width, int height, int frame_rate, bool do_argb_conversio
 	video_port = camera->output[MMAL_CAMERA_VIDEO_PORT];
 	video_port->buffer_num = 3;
 
-	//if all we want is a single output with the raw data, don't need to make a splitter
-//	if(!do_argb_conversion)
-//	{
 	output = new CCameraOutput();
 	if(!output->Init(Width,Height,camera,MMAL_CAMERA_VIDEO_PORT,do_argb_conversion))
 	{
 		printf("Failed to initialize output\n");
 		goto error;
 	}
-//	}
-//	else
-//	{
-//		//create the splitter component
-//		splitter = CreateSplitterComponentAndSetupPorts(video_port);
-//		if(!splitter)
-//			goto error;
-//
-//		//create and enable a connection between the video output and the resizer input
-//		status = mmal_connection_create(&vid_to_split_connection, video_port, splitter->input[0], MMAL_CONNECTION_FLAG_TUNNELLING | MMAL_CONNECTION_FLAG_ALLOCATION_ON_INPUT);
-//		if (status != MMAL_SUCCESS)
-//		{
-//			printf("Failed to create connection\n");
-//			goto error;
-//		}
-//		status = mmal_connection_enable(vid_to_split_connection);
-//		if (status != MMAL_SUCCESS)
-//		{
-//			printf("Failed to enable connection\n");
-//			goto error;
-//		}
-//
-//		//setup all the outputs
-//		for(int i = 0; i < num_levels; i++)
-//		{
-//			outputs[i] = new CCameraOutput();
-//			if(!outputs[i]->Init(Width >> i,Height >> i,splitter,i,do_argb_conversion))
-//			{
-//				printf("Failed to initialize output %d\n",i);
-//				goto error;
-//			}
-//		}
-//	}
-
 	//begin capture
 	if (mmal_port_parameter_set_boolean(video_port, MMAL_PARAMETER_CAPTURE, 1) != MMAL_SUCCESS)
 	{
@@ -330,9 +236,6 @@ bool CCamera::Init(int width, int height, int frame_rate, bool do_argb_conversio
 
 	//store created info
 	CameraComponent = camera;
-//	SplitterComponent = splitter;
-//	VidToSplitConn = vid_to_split_connection;
-//	memcpy(Outputs,outputs,sizeof(outputs));
 	Output = output;
 
 	//return success
@@ -340,49 +243,29 @@ bool CCamera::Init(int width, int height, int frame_rate, bool do_argb_conversio
 	return true;
 
 error:
-//	if(vid_to_split_connection)
-//		mmal_connection_destroy(vid_to_split_connection);
 	if(camera)
 		mmal_component_destroy(camera);
-//	if(splitter)
-//		mmal_component_destroy(splitter);
-//	for(int i = 0; i < 4; i++)
-//	{
 	if(output)
 	{
 		output->Release();
 		delete output;
 	}
-//	}
 	return false;
 }
 
 void CCamera::Release()
 {
-//	for(int i = 0; i < 4; i++)
-//	{
-//		if(Outputs[i])
-//		{
-//			Outputs[i]->Release();
-//			delete Outputs[i];
-//			Outputs[i] = NULL;
-//		}
 	if (Output) {
 		Output->Release();
 		delete Output;
 		Output = NULL;
 	}
-//	}
-//	if(VidToSplitConn)
-//		mmal_connection_destroy(VidToSplitConn);
+
 	if(CameraComponent)
 		mmal_component_disable(CameraComponent);
 		mmal_component_destroy(CameraComponent);
-//	if(SplitterComponent)
-//		mmal_component_destroy(SplitterComponent);
-//	VidToSplitConn = NULL;
+
 	CameraComponent = NULL;
-//	SplitterComponent = NULL;
 }
 
 void CCamera::OnCameraControlCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
@@ -390,25 +273,20 @@ void CCamera::OnCameraControlCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *b
 	printf("Camera control callback\n");
 }
 
-//bool CCamera::BeginReadFrame(int level, const void* &out_buffer, int& out_buffer_size)
 bool CCamera::BeginReadFrame(const void* &out_buffer, int& out_buffer_size)
 {
-//	return Outputs[level] ? Outputs[level]->BeginReadFrame(out_buffer,out_buffer_size) : false;
 	return Output ? Output->BeginReadFrame(out_buffer,out_buffer_size) : false;
 
 }
 
 void CCamera::EndReadFrame()
 {
-//	if(Outputs[level]) Outputs[level]->EndReadFrame();
 	if(Output) Output->EndReadFrame();
 
 }
 
-//int CCamera::ReadFrame(int level, void* dest, int dest_size)
 int CCamera::ReadFrame(void* buffer, int buffer_size)
 {
-//	return Outputs[level] ? Outputs[level]->ReadFrame(dest,dest_size) : -1;
 	return Output ? Output->ReadFrame(buffer,buffer_size) : -1;
 }
 
@@ -540,7 +418,7 @@ void CCameraOutput::OnVideoBufferCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_
 	//add the buffer to the output queue
 	mmal_queue_put(OutputQueue,buffer);
 
-	//printf("Video buffer callback, output queue len=%d\n", mmal_queue_length(OutputQueue));
+	printf("Video buffer callback, output queue len=%d\n", mmal_queue_length(OutputQueue));
 }
 
 void CCameraOutput::VideoBufferCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
@@ -576,12 +454,12 @@ int CCameraOutput::ReadFrame(void* dest, int dest_size)
 
 bool CCameraOutput::BeginReadFrame(const void* &out_buffer, int& out_buffer_size)
 {
-	//printf("Attempting to read camera output\n");
+	printf("Attempting to read camera output\n");
 
 	//try and get buffer
 	if(MMAL_BUFFER_HEADER_T *buffer = mmal_queue_get(OutputQueue))
 	{
-		//printf("Reading buffer of %d bytes from output\n",buffer->length);
+		printf("Reading buffer of %d bytes from output\n",buffer->length);
 
 		//lock it
 		mmal_buffer_header_mem_lock(buffer);

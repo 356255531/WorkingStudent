@@ -1,9 +1,7 @@
 /*
-Chris Cummings
 This is a stripped down version of the original RaspiCamControl module from the
-raspberry pi userland-master branch, 24/10/2013. It contains the control functions
-but none of the command line stuff, and is tweaked to work as a cpp file. Original
-copyright info below
+raspberry pi userland-master branch. It contains the control functions.
+Original copyright info below
 */
 
 /*
