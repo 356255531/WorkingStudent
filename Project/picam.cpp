@@ -82,9 +82,10 @@ int main(int argc, const char **argv)
 		//begin frame, draw the texture then end frame (the bit of maths just fits the image to the screen while maintaining aspect ratio)
 		BeginFrame();
 		DrawSobelRect(&y_tex, -1, -1, 1, 1, &sobel_tex);
-		DrawBlurredRect(&sobel_tex, -1,-1,1,1,&blurred_sobel_tex);
-		DrawHarrisRect(&blurred_sobel_tex, -1,-1,1,1,&harris_response_tex);
-		DrawTextureRect(&harris_response_tex, -1, -1, 1, 1, NULL, 0.05);
+		DrawBlurredSobelRect(&sobel_tex, -1,-1,1,1,&blurred_sobel_tex);
+		DrawWindowBlurredSoeblRect(&blurred_sobel_tex, -1,-1,1,1,&window_blurred_sobel_tex, 2);
+		DrawHarrisRect(&window_blurred_sobel_tex, -1,-1,1,1,&harris_response_tex, 0.06);
+		DrawTextureRect(&harris_response_tex, -1, -1, 1, 1, NULL);
 
 		EndFrame();
 
