@@ -22,5 +22,6 @@ void main(void)
 	//vec4 comp = vec4(greaterThan(col,vec4(0.1)));
 	//col = col * comp;
 
-    gl_FragColor = clamp(col,vec4(0),vec4(1));
+    // gl_FragColor = clamp(col,vec4(0),vec4(1));
+    gl_FragColor = col;
 }
