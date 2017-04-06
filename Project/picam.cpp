@@ -83,7 +83,8 @@ int main(int argc, const char **argv)
 		BeginFrame();
 		DrawSobelRect(&y_tex, -1, -1, 1, 1, &sobel_tex);
 		DrawBlurredRect(&sobel_tex, -1,-1,1,1,&blurred_sobel_tex);
-		DrawTextureRect(&blurred_sobel_tex, -1, -1, 1, 1, NULL);
+		DrawHarrisRect(&blurred_sobel_tex, -1,-1,1,1,&harris_response_tex);
+		DrawTextureRect(&harris_response_tex, -1, -1, 1, 1, NULL, 0.05);
 
 		EndFrame();
 
