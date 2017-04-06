@@ -1,18 +1,13 @@
-<<<<<<< HEAD
 # Build directory
 build/
 
-=======
->>>>>>> e309e6814a4ea956b59fcaa2cc226ef3d9df2765
 # Compiled Object files
 *.slo
 *.lo
 *.o
-<<<<<<< HEAD
 
 # Compiled Dynamic libraries
 *.so
-=======
 *.obj
 
 # Precompiled Headers
@@ -27,18 +22,19 @@ build/
 # Fortran module files
 *.mod
 *.smod
->>>>>>> e309e6814a4ea956b59fcaa2cc226ef3d9df2765
 
 # Compiled Static libraries
 *.lai
 *.la
 *.a
-<<<<<<< HEAD
-=======
 *.lib
 
 # Executables
 *.exe
 *.out
 *.app
->>>>>>> e309e6814a4ea956b59fcaa2cc226ef3d9df2765
+
+# Cmake compiled
+CMakeFiles/
+CMakeCache.txt
+*.cmake
