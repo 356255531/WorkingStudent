@@ -17,7 +17,6 @@ void main(void)
 
     float x_gradient = 0.21 * x_gradient_3d.x + 0.72 * x_gradient_3d.y + 0.07 * x_gradient_3d.z;
     float y_gradient = 0.21 * y_gradient_3d.x + 0.72 * y_gradient_3d.y + 0.07 * y_gradient_3d.z;
-    float gradient_product = x_gradient * y_gradient;
 
-    gl_FragColor = vec4(x_gradient, y_gradient, gradient_product, 1.0);
+    gl_FragColor = vec4(x_gradient, y_gradient, 0.0, 1.0);
 }

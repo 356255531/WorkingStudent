@@ -3,18 +3,19 @@ uniform sampler2D tex;
 uniform vec2 texelsize;
 void main(void) 
 {
-	vec4 col = vec4(0);
+	vec4 ret = vec4(0);
 	float total_added = 0.0;
-	for(int xoffset = -2; xoffset <= 2; xoffset++)
+	for(int x_offset = -3; x_offset <= 3; x_offset++)
 	{
-		for(int yoffset = -2; yoffset <= 2; yoffset++)
+		for(int y_offset = -3; y_offset <= 3; y_offset++)
 		{
-			vec2 offset = vec2(xoffset,yoffset);
-			float prop = 1.0/(offset.x*offset.x+offset.y*offset.y+1.0);
+			vec2 offset = vec2(x_offset, y_offset);
+			float prop = 1.0 / (offset.x * offset.x + offset.y * offset.y + 1.0);
 			total_added += prop;
-			col += prop*texture2D(tex,tcoord+offset*texelsize);
+			ret += prop * texture2D(tex,tcoord+offset*texelsize);
 		}
 	}
-	col /= total_added;
-    gl_FragColor = clamp(col,vec4(0),vec4(1));
+	ret /= total_added;
+	ret.z = ret.x, * ret.y;
+    gl_FragColor = ret;
 }
