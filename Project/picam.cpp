@@ -23,8 +23,8 @@ int main(int argc, const char **argv)
 	// Create the yuv textures
 	GfxTexture y_tex, u_tex, v_tex;
 	y_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
-	u_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH >> 1, MAIN_TEXTURE_HEIGHT >> 1);
-	v_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH >> 1, MAIN_TEXTURE_HEIGHT >> 1);
+	// u_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH >> 1, MAIN_TEXTURE_HEIGHT >> 1);
+	// v_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH >> 1, MAIN_TEXTURE_HEIGHT >> 1);
 
 	// Create the pipline textures
 	GfxTexture sobel_tex, blurred_sobel_tex, harris_response_tex, select_tex;
