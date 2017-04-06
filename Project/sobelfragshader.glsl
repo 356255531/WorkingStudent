@@ -3,25 +3,21 @@ uniform sampler2D tex;
 uniform vec2 texelsize;
 void main(void) 
 {
-	vec4 tm1m1 = texture2D(tex,tcoord+vec2(-1,-1)*texelsize);
-	vec4 tm10 = texture2D(tex,tcoord+vec2(-1,0)*texelsize);
-	vec4 tm1p1 = texture2D(tex,tcoord+vec2(-1,1)*texelsize);
-	vec4 tp1m1 = texture2D(tex,tcoord+vec2(1,-1)*texelsize);
-	vec4 tp10 = texture2D(tex,tcoord+vec2(1,0)*texelsize);
-	vec4 tp1p1 = texture2D(tex,tcoord+vec2(1,1)*texelsize);
-	vec4 t0m1 = texture2D(tex,tcoord+vec2(0,-1)*texelsize);
-	vec4 t0p1 = texture2D(tex,tcoord+vec2(0,-1)*texelsize);
+	vec3 tm1m1 = texture2D(tex,tcoord+vec2(-1,-1)*texelsize);
+	vec3 tm10 = texture2D(tex,tcoord+vec2(-1,0)*texelsize);
+	vec3 tm1p1 = texture2D(tex,tcoord+vec2(-1,1)*texelsize);
+	vec3 tp1m1 = texture2D(tex,tcoord+vec2(1,-1)*texelsize);
+	vec3 tp10 = texture2D(tex,tcoord+vec2(1,0)*texelsize);
+	vec3 tp1p1 = texture2D(tex,tcoord+vec2(1,1)*texelsize);
+	vec3 t0m1 = texture2D(tex,tcoord+vec2(0,-1)*texelsize);
+	vec3 t0p1 = texture2D(tex,tcoord+vec2(0,-1)*texelsize);
 
-	vec4 xdiff = -1.0*tm1m1 + -2.0*tm10 + -1.0*tm1p1 + 1.0*tp1m1 + 2.0*tp10 + 1.0*tp1p1;
-	vec4 ydiff = -1.0*tm1m1 + -2.0*t0m1 + -1.0*tp1m1 + 1.0*tm1p1 + 2.0*t0p1 + 1.0*tp1p1;
-	vec4 tot = sqrt(xdiff*xdiff+ydiff*ydiff);
+	vec3 x_gradient_3d = -1.0*tm1m1 + -2.0*tm10 + -1.0*tm1p1 + 1.0*tp1m1 + 2.0*tp10 + 1.0*tp1p1;
+	vec3 y_gradient_3d = -1.0*tm1m1 + -2.0*t0m1 + -1.0*tp1m1 + 1.0*tm1p1 + 2.0*t0p1 + 1.0*tp1p1;
 
-	vec4 col = tot;
-	col.a = 1.0;
+	float x_gradient = (x_gradient_3d.x + x_gradient_3d.y + x_gradient_3d.z) / 3.0;
+	float y_gradient = (y_gradient_3d.x + y_gradient_3d.y + y_gradient_3d.z) / 3.0;
+	float gradient_product = x_gradient * y_gradient;
 
-	//vec4 comp = vec4(greaterThan(col,vec4(0.1)));
-	//col = col * comp;
-
-    // gl_FragColor = clamp(col,vec4(0),vec4(1));
-    gl_FragColor = col;
+	gl_FragColor = vec3(x_gradient, y_gradient, gradient_product);
 }

@@ -546,12 +546,12 @@ void DrawSobelRect(GfxTexture* texture, float x0, float y0, float x1, float y1, 
 	check();
 
 	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
-	glBindTexture(GL_TEXTURE_2D, texture->GetId());	check();
+	glBindTexture(GL_TEXTURE_2D, texture->GetId());		check();
 
 	GLuint loc = glGetAttribLocation(GSimpleProg.GetId(), "vertex");
 	glVertexAttribPointer(loc, 4, GL_FLOAT, 0, 16, 0);	check();
-	glEnableVertexAttribArray(loc);	check();
-	glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 ); check();
+	glEnableVertexAttribArray(loc);						check();
+	glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 ); 			check();
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
