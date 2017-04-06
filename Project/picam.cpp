@@ -27,11 +27,13 @@ int main(int argc, const char **argv)
 	// v_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH >> 1, MAIN_TEXTURE_HEIGHT >> 1);
 
 	// Create the pipline textures
-	GfxTexture sobel_tex, blurred_sobel_tex, harris_response_tex, select_tex;
+	GfxTexture sobel_tex, blurred_sobel_tex, window_blurred_sobel_tex,harris_response_tex, select_tex;
 	sobel_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 	sobel_tex.GenerateFrameBuffer();
 	blurred_sobel_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 	blurred_sobel_tex.GenerateFrameBuffer();
+	window_blurred_sobel_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
+	window_blurred_sobel_tex.GenerateFrameBuffer();	
 	harris_response_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 	harris_response_tex.GenerateFrameBuffer();
 	select_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);

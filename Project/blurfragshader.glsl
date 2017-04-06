@@ -16,6 +16,6 @@ void main(void)
         }
     }
     ret /= total_added;
-    ret.z = ret.x * ret.y;
+    ret.b = ret.r * ret.g;
     gl_FragColor = ret;
 }
