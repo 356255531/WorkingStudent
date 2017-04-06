@@ -19,20 +19,15 @@ public:
 
 	CCameraOutput();
 	~CCameraOutput();
-	bool Init(
-		int width, int height,
-		 MMAL_COMPONENT_T* input_component, 
-		 int input_port_idx, bool do_argb_conversion);
+	bool Init(int width, int height, MMAL_COMPONENT_T* input_component, int input_port_idx, bool do_argb_conversion);
 	void Release();
 	void OnVideoBufferCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
 	static void VideoBufferCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer);
 	int ReadFrame(void* buffer, int buffer_size);
 	bool BeginReadFrame(const void* &out_buffer, int& out_buffer_size);
 	void EndReadFrame();
-	MMAL_POOL_T* EnablePortCallbackAndCreateBufferPool(
-		MMAL_PORT_T* port, MMAL_PORT_BH_CB_T cb, int buffer_count);
-	MMAL_COMPONENT_T* CreateResizeComponentAndSetupPorts(
-		MMAL_PORT_T* video_output_port, bool do_argb_conversion);
+	MMAL_POOL_T* EnablePortCallbackAndCreateBufferPool(MMAL_PORT_T* port, MMAL_PORT_BH_CB_T cb, int buffer_count);
+	MMAL_COMPONENT_T* CreateResizeComponentAndSetupPorts(MMAL_PORT_T* video_output_port, bool do_argb_conversion);
 
 };
 
@@ -57,14 +52,15 @@ private:
 	int							Width;
 	int							Height;
 	int							Frame_Rate;
-	RASPICAM_CAMERA_PARAMETERS	CameraParameters
+	MMAL_COMPONENT_T*			CameraComponent;    
+	RASPICAM_CAMERA_PARAMETERS	CameraParameters;
 	CCameraOutput*				Output;
 
 	friend CCamera* StartCamera(
-		int width, int height, int frame_rate, bool do_argb_conversion);
+	    int width, int height, int frame_rate, bool do_argb_conversion);
 	friend void StopCamera();
 };
 
 CCamera* StartCamera(
-	int width, int height, int frame_rate, bool do_argb_conversion = true);
+    int width, int height, int frame_rate, bool do_argb_conversion = true);
 void StopCamera();

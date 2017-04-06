@@ -206,12 +206,10 @@ bool CCamera::Init(int width, int height, int frame_rate, bool do_argb_conversio
 	raspicamcontrol_set_defaults(&CameraParameters);
 
 	MMAL_COMPONENT_T *camera = 0;
-//	MMAL_COMPONENT_T *splitter = 0;
-//	MMAL_CONNECTION_T* vid_to_split_connection = 0;
 	MMAL_PORT_T *video_port = NULL;
 	MMAL_STATUS_T status;
-//	CCameraOutput* outputs[4]; memset(outputs,0,sizeof(outputs));
 	CCameraOutput* output = NULL;
+
 	//create the camera component
 	camera = CreateCameraComponentAndSetupPorts();
 	if (!camera)
@@ -418,7 +416,7 @@ void CCameraOutput::OnVideoBufferCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_
 	//add the buffer to the output queue
 	mmal_queue_put(OutputQueue,buffer);
 
-	printf("Video buffer callback, output queue len=%d\n", mmal_queue_length(OutputQueue));
+	// printf("Video buffer callback, output queue len=%d\n", mmal_queue_length(OutputQueue));
 }
 
 void CCameraOutput::VideoBufferCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer)
@@ -454,12 +452,12 @@ int CCameraOutput::ReadFrame(void* dest, int dest_size)
 
 bool CCameraOutput::BeginReadFrame(const void* &out_buffer, int& out_buffer_size)
 {
-	printf("Attempting to read camera output\n");
+	// printf("Attempting to read camera output\n");
 
 	//try and get buffer
 	if(MMAL_BUFFER_HEADER_T *buffer = mmal_queue_get(OutputQueue))
 	{
-		printf("Reading buffer of %d bytes from output\n",buffer->length);
+		// printf("Reading buffer of %d bytes from output\n",buffer->length);
 
 		//lock it
 		mmal_buffer_header_mem_lock(buffer);
