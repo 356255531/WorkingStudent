@@ -737,11 +737,12 @@ void DrawSelectionRect(GfxTexture* window_blurred_sobel_tex, GfxTexture* harris_
 
 	glUseProgram(GSelectProg.GetId());	check();
 
-	glUniform2f(glGetUniformLocation(GYUVProg.GetId(), "offset"), x0, y0);
-	glUniform2f(glGetUniformLocation(GYUVProg.GetId(), "scale"), x1 - x0, y1 - y0);
-	glUniform2f(glGetUniformLocation(GMedianProg.GetId(), "texelsize"), 1.f / window_blurred_sobel_tex->GetWidth(), 1.f / window_blurred_sobel_tex->GetHeight());
-	glUniform1i(glGetUniformLocation(GYUVProg.GetId(), "gradient_tex"), 0);
-	glUniform1i(glGetUniformLocation(GYUVProg.GetId(), "harris_tex"), 1);
+	glUniform2f(glGetUniformLocation(GSelectProg.GetId(), "offset"), x0, y0);
+	glUniform2f(glGetUniformLocation(GSelectProg.GetId(), "scale"), x1 - x0, y1 - y0);
+	glUniform1i(glGetUniformLocation(GSelectProg.GetId(), "gradient_tex"), 0);
+	glUniform1i(glGetUniformLocation(GSelectProg.GetId(), "harris_tex"), 1);
+	glUniform2f(glGetUniformLocation(GSelectProg.GetId(), "texelsize"), 1.f / window_blurred_sobel_tex->GetWidth(), 1.f / window_blurred_sobel_tex->GetHeight());
+
 	check();
 
 	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
