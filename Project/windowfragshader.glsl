@@ -5,14 +5,9 @@ uniform int half_window_size;
 void main(void) 
 {
     vec4 ret = vec4(0);
-    for(int x_offset = -1; x_offset <= 1; x_offset++)
-    {
-        for(int y_offset = -1; y_offset <= 1; y_offset++)
-        {
-            vec2 offset = vec2(x_offset, y_offset);
-            ret += texture2D(tex,tcoord + offset * texelsize);
-        }
-    }
+    ret +=  texture2D(tex, vec2(-1, -1) * texelsize) + texture2D(tex, vec2(1, -1) * texelsize) + texture2D(tex, vec2(-1, 1) * texelsize) + texture2D(tex, vec2(1, 1) * texelsize) +
+            texture2D(tex, vec2(0, -1) * texelsize) + texture2D(tex, vec2(0, 1) * texelsize) + texture2D(tex, vec2(-1, 0) * texelsize) + texture2D(tex, vec2(1, 0) * texelsize) +
+            texture2D(tex, vec2(0, 0) * texelsize);
     ret.a = 1.0;
     gl_FragColor = ret;
 }

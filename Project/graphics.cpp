@@ -29,6 +29,7 @@ GfxShader GDilateFS;
 GfxShader GErodeFS;
 GfxShader GWindowFS;
 GfxShader GHarrisFS;
+GfxShader GSelectFS;
 GfxProgram GSimpleProg;
 GfxProgram GYUVProg;
 GfxProgram GBlurProg;
@@ -40,6 +41,7 @@ GfxProgram GDilateProg;
 GfxProgram GErodeProg;
 GfxProgram GWindowProg;
 GfxProgram GHarrisProg;
+GfxProgram GSelectProg;
 GLuint GQuadVertexBuffer;
 
 void InitGraphics()
@@ -153,6 +155,7 @@ void InitGraphics()
 	GErodeFS.LoadFragmentShader("erodefragshader.glsl");
 	GWindowFS.LoadFragmentShader("windowfragshader.glsl");
 	GHarrisFS.LoadFragmentShader("harrisfragshader.glsl");
+	GSelectFS.LoadFragmentShader("selectfragshader.glsl");
 	GSimpleProg.Create(&GSimpleVS, &GSimpleFS);
 	GYUVProg.Create(&GSimpleVS, &GYUVFS);
 	GBlurProg.Create(&GSimpleVS, &GBlurFS);
@@ -164,6 +167,7 @@ void InitGraphics()
 	GErodeProg.Create(&GSimpleVS, &GErodeFS);
 	GWindowProg.Create(&GSimpleVS, &GWindowFS);
 	GHarrisProg.Create(&GSimpleVS, &GHarrisFS);
+	GSelectProg.Create(&GSimpleVS, &GSelectFS);
 	check();
 
 	//create an ickle vertex buffer
@@ -653,7 +657,7 @@ void DrawYUVTextureRect(GfxTexture* ytexture, GfxTexture* utexture, GfxTexture* 
 	}
 }
 
-void DrawWindowBlurredSoeblRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target, int half_window_size) {
+void DrawWindowBlurredSoeblRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target) {
 	if (render_target)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, render_target->GetFramebufferId());
@@ -667,7 +671,6 @@ void DrawWindowBlurredSoeblRect(GfxTexture* texture, float x0, float y0, float x
 	glUniform2f(glGetUniformLocation(GWindowProg.GetId(), "scale"), x1 - x0, y1 - y0);
 	glUniform1i(glGetUniformLocation(GWindowProg.GetId(), "tex"), 0);
 	glUniform2f(glGetUniformLocation(GMedianProg.GetId(), "texelsize"), 1.f / texture->GetWidth(), 1.f / texture->GetHeight());
-	glUniform1i(glGetUniformLocation(GWindowProg.GetId(), "half_window_size"), half_window_size);
 	check();
 
 	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
@@ -715,6 +718,47 @@ void DrawHarrisRect(GfxTexture* texture, float x0, float y0, float x1, float y1,
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	if (render_target)
+	{
+		//glFinish();	check();
+		//glFlush(); check();
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport ( 0, 0, GScreenWidth, GScreenHeight );
+	}
+}
+
+void DrawSelectionRect(GfxTexture* window_blurred_sobel_tex, GfxTexture* harris_response_tex, float x0, float y0, float x1, float y1, GfxTexture* render_target) {
+	if (render_target)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, render_target->GetFramebufferId());
+		glViewport ( 0, 0, render_target->GetWidth(), render_target->GetHeight() );
+		check();
+	}
+
+	glUseProgram(GSelectProg.GetId());	check();
+
+	glUniform2f(glGetUniformLocation(GYUVProg.GetId(), "offset"), x0, y0);
+	glUniform2f(glGetUniformLocation(GYUVProg.GetId(), "scale"), x1 - x0, y1 - y0);
+	glUniform2f(glGetUniformLocation(GMedianProg.GetId(), "texelsize"), 1.f / window_blurred_sobel_tex->GetWidth(), 1.f / window_blurred_sobel_tex->GetHeight());
+	glUniform1i(glGetUniformLocation(GYUVProg.GetId(), "gradient_tex"), 0);
+	glUniform1i(glGetUniformLocation(GYUVProg.GetId(), "harris_tex"), 1);
+	check();
+
+	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, window_blurred_sobel_tex->GetId());	check();
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, harris_response_tex->GetId());	check();
+	glActiveTexture(GL_TEXTURE0);
+
+	GLuint loc = glGetAttribLocation(GYUVProg.GetId(), "vertex");
+	glVertexAttribPointer(loc, 4, GL_FLOAT, 0, 16, 0);	check();
+	glEnableVertexAttribArray(loc);	check();
+	glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 ); check();
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
 	if (render_target)
 	{
 		//glFinish();	check();

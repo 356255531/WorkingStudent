@@ -19,7 +19,7 @@ class GfxShader
 public:
 
 	GfxShader() : Src(NULL), Id(0), GlShaderType(0) {}
-	~GfxShader() { if(Src) delete[] Src; }
+	~GfxShader() { if (Src) delete[] Src; }
 
 	bool LoadVertexShader(const char* filename);
 	bool LoadFragmentShader(const char* filename);
@@ -37,7 +37,10 @@ public:
 	GfxProgram() {}
 	~GfxProgram() {}
 
-	bool Create(GfxShader* vertex_shader, GfxShader* fragment_shader);
+	bool Create(
+	    GfxShader* vertex_shader,
+	    GfxShader* fragment_shader
+	);
 	GLuint GetId() { return Id; }
 };
 
@@ -51,11 +54,20 @@ class GfxTexture
 	GLuint FramebufferId;
 public:
 
-	GfxTexture() : Width(0), Height(0), Id(0), FramebufferId(0) {}
+	GfxTexture()
+		: Width(0), Height(0), Id(0), FramebufferId(0) {}
 	~GfxTexture() {}
 
-	bool CreateRGBA(int width, int height, const void* data = NULL);
-	bool CreateGreyScale(int width, int height, const void* data = NULL);
+	bool CreateRGBA(
+	    int width,
+	    int height,
+	    const void* data = NULL
+	);
+	bool CreateGreyScale(
+	    int width,
+	    int height,
+	    const void* data = NULL
+	);
 	bool GenerateFrameBuffer();
 	void SetPixels(const void* data);
 	GLuint GetId() { return Id; }
@@ -67,17 +79,104 @@ public:
 
 void SaveFrameBuffer(const char* fname);
 
-void DrawTextureRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target);
-void DrawYUVTextureRect(GfxTexture* ytexture, GfxTexture* utexture, GfxTexture* vtexture, float x0, float y0, float x1, float y1, GfxTexture* render_target);
-void DrawBlurredSobelRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target);
-void DrawSobelRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target);
-void DrawMedianRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target);
-void DrawMultRect(GfxTexture* texture, float x0, float y0, float x1, float y1, float r, float g, float b, GfxTexture* render_target);
-void DrawThreshRect(GfxTexture* texture, float x0, float y0, float x1, float y1, float r, float g, float b, GfxTexture* render_target);
-void DrawDilateRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target);
-void DrawErodeRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target);
+void DrawTextureRect(
+    GfxTexture* texture,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);
+void DrawYUVTextureRect(
+    GfxTexture* ytexture,
+    GfxTexture* utexture,
+    GfxTexture* vtexture,
+    float x0, float y0,
+    float x1, float y1,
+    GfxTexture* render_target
+);
+void DrawBlurredSobelRect(
+    GfxTexture* texture,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);
+void DrawSobelRect(
+    GfxTexture* texture,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);
+void DrawMedianRect(
+    GfxTexture* texture,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);
+void DrawMultRect(
+    GfxTexture* texture,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);
+void DrawThreshRect(
+    GfxTexture* texture,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);
+void DrawDilateRect(
+    GfxTexture* texture,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);
+void DrawErodeRect(
+    GfxTexture* texture,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);
 
 
 //New created draw fnction
-void DrawWindowBlurredSoeblRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target, int half_window_size);
-void DrawHarrisRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target, float threshold);
+void DrawWindowBlurredSoeblRect(
+    GfxTexture* texture,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);
+void DrawHarrisRect(
+    GfxTexture* texture,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target,
+    float threshold
+);
+void DrawSelectionRect(
+    GfxTexture* window_blurred_sobel_tex,
+    GfxTexture* harris_response_tex,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);

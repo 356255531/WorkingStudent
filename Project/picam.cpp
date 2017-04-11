@@ -27,17 +27,21 @@ int main(int argc, const char **argv)
 	// v_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH >> 1, MAIN_TEXTURE_HEIGHT >> 1);
 
 	// Create the pipline textures
-	GfxTexture sobel_tex, blurred_sobel_tex, window_blurred_sobel_tex,harris_response_tex, select_tex;
+	GfxTexture 	sobel_tex,
+	            blurred_sobel_tex,
+	            window_blurred_sobel_tex,
+	            harris_response_tex,
+	            output_tex;
 	sobel_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 	sobel_tex.GenerateFrameBuffer();
 	blurred_sobel_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 	blurred_sobel_tex.GenerateFrameBuffer();
 	window_blurred_sobel_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
-	window_blurred_sobel_tex.GenerateFrameBuffer();	
+	window_blurred_sobel_tex.GenerateFrameBuffer();
 	harris_response_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 	harris_response_tex.GenerateFrameBuffer();
-	select_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
-	select_tex.GenerateFrameBuffer();
+	output_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
+	output_tex.GenerateFrameBuffer();
 
 
 	printf("Running frame loop\n");
@@ -83,11 +87,13 @@ int main(int argc, const char **argv)
 
 		//begin frame, draw the texture then end frame (the bit of maths just fits the image to the screen while maintaining aspect ratio)
 		BeginFrame();
+
 		DrawSobelRect(&y_tex, -1, -1, 1, 1, &sobel_tex);
-		DrawBlurredSobelRect(&sobel_tex, -1,-1,1,1,&blurred_sobel_tex);
-		DrawWindowBlurredSoeblRect(&blurred_sobel_tex, -1,-1,1,1,&window_blurred_sobel_tex, 2);
-		DrawHarrisRect(&window_blurred_sobel_tex, -1,-1,1,1,&harris_response_tex, 0.06);
-		DrawTextureRect(&harris_response_tex, -1, -1, 1, 1, NULL);
+		DrawBlurredSobelRect(&sobel_tex, -1, -1, 1, 1, &blurred_sobel_tex);
+		DrawWindowBlurredSoeblRect(&blurred_sobel_tex, -1, -1, 1, 1, &window_blurred_sobel_tex);
+		// DrawHarrisRect(&window_blurred_sobel_tex, -1, -1, 1, 1, &harris_response_tex, 0.06);
+		// DrawSelectionRect(&window_blurred_sobel_tex, &harris_response_tex,  -1, -1, 1, 1, &output_tex);
+		DrawTextureRect(&window_blurred_sobel_tex, -1, -1, 1, 1, NULL);
 
 		EndFrame();
 
