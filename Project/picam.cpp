@@ -11,6 +11,8 @@
 #define TEXTURE_GRID_COLS 4
 #define TEXTURE_GRID_ROWS 4
 
+#define check() assert(glGetError() == 0)
+
 char tmpbuff[MAIN_TEXTURE_WIDTH * MAIN_TEXTURE_HEIGHT * 4];
 
 //entry point
@@ -32,6 +34,7 @@ int main(int argc, const char **argv)
 	            window_blurred_sobel_tex,
 	            harris_response_tex,
 	            output_tex;
+
 	sobel_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 	sobel_tex.GenerateFrameBuffer();
 	blurred_sobel_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
@@ -42,7 +45,7 @@ int main(int argc, const char **argv)
 	harris_response_tex.GenerateFrameBuffer();
 	output_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 	output_tex.GenerateFrameBuffer();
-
+	check();
 
 	printf("Running frame loop\n");
 
@@ -92,8 +95,8 @@ int main(int argc, const char **argv)
 		DrawBlurredSobelRect(&sobel_tex, -1, -1, 1, 1, &blurred_sobel_tex);
 		DrawWindowBlurredSoeblRect(&blurred_sobel_tex, -1, -1, 1, 1, &window_blurred_sobel_tex);
 		DrawHarrisRect(&window_blurred_sobel_tex, -1, -1, 1, 1, &harris_response_tex, 0.06);
-		// DrawSelectionRect(&window_blurred_sobel_tex, &harris_response_tex,  -1, -1, 1, 1, &output_tex);
-		DrawTextureRect(&harris_response_tex, -1, -1, 1, 1, NULL);
+		DrawSelectionRect(&harris_response_tex, -1, -1, 1, 1, &output_tex);
+		DrawTextureRect(&output_tex, -1, -1, 1, 1, NULL);
 
 		EndFrame();
 

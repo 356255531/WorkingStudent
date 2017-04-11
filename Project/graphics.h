@@ -111,47 +111,6 @@ void DrawSobelRect(
     float y1,
     GfxTexture* render_target
 );
-void DrawMedianRect(
-    GfxTexture* texture,
-    float x0,
-    float y0,
-    float x1,
-    float y1,
-    GfxTexture* render_target
-);
-void DrawMultRect(
-    GfxTexture* texture,
-    float x0,
-    float y0,
-    float x1,
-    float y1,
-    GfxTexture* render_target
-);
-void DrawThreshRect(
-    GfxTexture* texture,
-    float x0,
-    float y0,
-    float x1,
-    float y1,
-    GfxTexture* render_target
-);
-void DrawDilateRect(
-    GfxTexture* texture,
-    float x0,
-    float y0,
-    float x1,
-    float y1,
-    GfxTexture* render_target
-);
-void DrawErodeRect(
-    GfxTexture* texture,
-    float x0,
-    float y0,
-    float x1,
-    float y1,
-    GfxTexture* render_target
-);
-
 
 //New created draw fnction
 void DrawWindowBlurredSoeblRect(
@@ -172,8 +131,7 @@ void DrawHarrisRect(
     float threshold
 );
 void DrawSelectionRect(
-    GfxTexture* window_blurred_sobel_tex,
-    GfxTexture* harris_response_tex,
+    GfxTexture* texture,
     float x0,
     float y0,
     float x1,

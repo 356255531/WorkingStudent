@@ -8,5 +8,7 @@ void main(void)
     float harris_response =   pow(gradient_info.r, 2.0) * pow(gradient_info.g, 2.0) - pow(gradient_info.b, 2.0) - 
     threshold * pow((pow(gradient_info.r, 2.0) + pow(gradient_info.g, 2.0)), 2.0);
 
-    gl_FragColor = vec4(harris_response, 0, 0, 1);
+    gradient_info.a = harris_response;
+
+    gl_FragColor = gradient_info;
 }
