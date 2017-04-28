@@ -9,10 +9,11 @@ But you of course need to have git.
 ## Usage
 We are currently working an the project directory and a robust harris detector were implemented there.
 You have the full functionality by input the following code:
+```
     git clone git@github.com:356255531/WorkingStudent.git
     cd WorkingStudent/Project/
     build .
     make
     ./picam
-
+```
 For another demo program just enter the folder and play around.
