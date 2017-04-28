@@ -1,4 +1,4 @@
-# GPU Based Visual Navigation Implementation on Raspberry Pi 3
+# Visual Navigation Project on Raspberry Pi 3
 
 This repository includes the research materials and gpu based computer vision task implementations e.g. the basic program framework from @Chris Cummings (http://robotblogging.blogspot.de/2013/10/gpu-accelerated-camera-processing-on.html) wand visual navigation project of chair navigation and communication (Technical University of Munich) as well as the official demo from userland.
 
