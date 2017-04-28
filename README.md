@@ -17,3 +17,5 @@ You have the full functionality by input the following code:
     ./picam
 ```
 For another demo program just enter the folder and play around.
+
+The stable version is under the master brach while the new and probably still in developing features will be placed under the dev branch.
