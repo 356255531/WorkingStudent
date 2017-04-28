@@ -1,6 +1,6 @@
 # Visual Navigation Project on Raspberry Pi 3
 
-This repository includes the research materials and gpu based computer vision task implementations e.g. the basic program framework from @Chris Cummings (http://robotblogging.blogspot.de/2013/10/gpu-accelerated-camera-processing-on.html) wand visual navigation project of chair navigation and communication (Technical University of Munich) as well as the official demo from userland.
+This repository includes the research materials and gpu based computer vision task implementations e.g. the basic program framework from @Chris Cummings (http://robotblogging.blogspot.de/2013/10/gpu-accelerated-camera-processing-on.html) wand visual navigation project of chair navigation and communication (Technical University of Munich) as well as the official demo from userland. This is a part of my working student work an the chair.
 
 ## dependency
 All you need is to build and install the source files from userland (https://github.com/raspberrypi/userland).
