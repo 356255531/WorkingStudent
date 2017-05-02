@@ -1,14 +1,10 @@
 varying vec2 tcoord;
 uniform sampler2D tex;
-uniform float threshold;
+
 void main(void) 
 {
-    vec4 gradient_info = texture2D(tex, tcoord);
-
-    float harris_response =   pow(gradient_info.r, 2.0) * pow(gradient_info.g, 2.0) - pow(gradient_info.b, 2.0) - 
-    threshold * pow((pow(gradient_info.r, 2.0) + pow(gradient_info.g, 2.0)), 2.0);
-
-    gradient_info.a = harris_response;
-
-    gl_FragColor = gradient_info;
+    vec4 gradient = texture2D(tex, tcoord);
+    float gradient_sum = gradient.r + gradient.g;
+    float harris_response = (gradient.r * gradient.g - (gradient.b * gradient.b)) / (gradient_sum);
+    gl_FragColor = vec4(vec3(harris_response * 10.0), 1.0);
 }

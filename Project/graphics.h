@@ -91,8 +91,10 @@ void DrawYUVTextureRect(
     GfxTexture* ytexture,
     GfxTexture* utexture,
     GfxTexture* vtexture,
-    float x0, float y0,
-    float x1, float y1,
+    float x0, 
+    float y0,
+    float x1, 
+    float y1,
     GfxTexture* render_target
 );
 void DrawSobelRect(
@@ -126,14 +128,14 @@ void DrawHarrisRect(
     float y0,
     float x1,
     float y1,
-    GfxTexture* render_target,
-    float threshold
+    GfxTexture* render_target
 );
-void DrawSelectionRect(
+void DrawNonMaxSupRect(
     GfxTexture* texture,
     float x0,
     float y0,
     float x1,
     float y1,
-    GfxTexture* render_target
+    GfxTexture* render_target,
+    float threshold=0.06
 );
