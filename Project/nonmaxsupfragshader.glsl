@@ -2,11 +2,12 @@ varying vec2 tcoord;
 
 uniform sampler2D tex;
 uniform vec2 texelsize;
+uniform float threshold;
 
 void main(void) 
 {
-    vec2 width_step = vec2(texelsize, 0.0);
-    vec2 height_step = vec2(0.0, texelsize);
+    vec2 width_step = vec2(texelsize.r, 0.0);
+    vec2 height_step = vec2(0.0, texelsize.g);
 
     float bottom_color =        texture2D(  tex, 
                                             tcoord - height_step).r;
@@ -38,6 +39,7 @@ void main(void)
     max_value = max(max_value, bottom_right_color);
     max_value = max(max_value, right_color);
     max_value = max(max_value, top_right_color);
+    max_value = max(max_value, threshold);
 
     gl_FragColor = vec4((center_color.rgb * step(max_value, center_color.r) * multiplier), 1.0);
 }

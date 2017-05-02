@@ -97,6 +97,18 @@ void DrawYUVTextureRect(
     float y1,
     GfxTexture* render_target
 );
+<<<<<<< HEAD
+void DrawBlurRect(
+=======
+void DrawSobelRect(
+>>>>>>> debug
+    GfxTexture* texture,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);
 void DrawBlurRect(
     GfxTexture* texture,
     float x0,
@@ -105,15 +117,6 @@ void DrawBlurRect(
     float y1,
     GfxTexture* render_target
 );
-void DrawSobelRect(
-    GfxTexture* texture,
-    float x0,
-    float y0,
-    float x1,
-    float y1,
-    GfxTexture* render_target
-);
-
 //New created draw fnction
 void DrawWindowBlurredSoeblRect(
     GfxTexture* texture,
@@ -129,7 +132,12 @@ void DrawHarrisRect(
     float y0,
     float x1,
     float y1,
+<<<<<<< HEAD
     GfxTexture* render_target);
+=======
+    GfxTexture* render_target
+);
+>>>>>>> debug
 void DrawNonMaxSupRect(
     GfxTexture* texture,
     float x0,
@@ -138,6 +146,7 @@ void DrawNonMaxSupRect(
     float y1,
     GfxTexture* render_target,
     float threshold=0.06
+<<<<<<< HEAD
 );
 void DrawCornerMarkRect(
     GfxTexture* ytexture,
@@ -147,4 +156,6 @@ void DrawCornerMarkRect(
     float x1, 
     float y1,
     GfxTexture* render_target
+=======
+>>>>>>> debug
 );

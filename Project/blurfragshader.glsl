@@ -3,62 +3,31 @@ uniform sampler2D tex;
 uniform vec2 texelsize;
 void main(void) 
 {
-    vec2 width_step = vec2(texelsize, 0.0);
-    vec2 height_step = vec2(0.0, texelsize);
+    vec2 width_step = vec2(texelsize.r, 0.0);
+    vec2 height_step = vec2(0.0, texelsize.g);
 
-    vec4 ret = vec4(0);
-    ret +=  2.0 *   (   texture2D(  tex, 
-                                    tcoord - 2 * height_step - 2 * width_step) + 
-                        texture2D(  tex, 
-                                    tcoord - 2 * height_step + 2 * width_step) + 
-                        texture2D(  tex, 
-                                    tcoord + 2 * height_step - 2 * width_step) + 
-                        texture2D(  tex, 
-                                    tcoord + 2 * height_step + 2 * width_step)） + 
-            4.0 *   (   texture2D(  tex, 
-                                    tcoord - 2 * height_step - width_step) + 
-                        texture2D(  tex, 
-                                    tcoord - 2 * height_step + width_step) + 
-                        texture2D(  tex, 
-                                    tcoord + 2 * height_step - width_step) + 
-                        texture2D(  tex, 
-                                    tcoord + 2 * height_step + width_step) +
-                        texture2D(  tex, 
-                                    tcoord - height_step - 2 * width_step) + 
-                        texture2D(  tex, 
-                                    tcoord - height_step + 2 * width_step) + 
-                        texture2D(  tex, 
-                                    tcoord + height_step - 2 * width_step) + 
-                        texture2D(  tex, 
-                                    tcoord + height_step + 2 * width_step)) +
-            5.0 *   (   texture2D(  tex, 
-                                    tcoord - 2 * height_step) +
-                        texture2D(  tex, 
-                                    tcoord + 2 * height_step) +
-                        texture2D(  tex, 
-                                    tcoord - 2 * width_step) +
-                        texture2D(  tex, 
-                                    tcoord + 2 * width_step)) +
-            9.0 *   (   texture2D(  tex, 
-                                    tcoord - height_step - width_step) + 
-                        texture2D(  tex, 
-                                    tcoord - height_step + width_step) + 
-                        texture2D(  tex, 
-                                    tcoord + height_step - width_step) + 
-                        texture2D(  tex, 
-                                    tcoord + height_step + width_step)) +
-            12.0 *  (   texture2D(  tex, 
-                                    tcoord - height_step) + 
-                        texture2D(  tex, 
-                                    tcoord + height_step) + 
-                        texture2D(  tex, 
-                                    tcoord - width_step) + 
-                        texture2D(  tex, 
-                                    tcoord + width_step)) +
-            15.0 * texture2D(   tex, 
-                                tcoord);
+    vec4 bottom_left_color =    texture2D(  tex,
+                                            tcoord + height_step - width_step);
+    vec4 bottom_color =         texture2D(  tex,
+                                            tcoord + height_step);
+    vec4 bottom_right_color =   texture2D(  tex,
+                                            tcoord + height_step + width_step);
+    vec4 top_left_color =       texture2D(  tex,
+                                            tcoord - height_step - width_step);
+    vec4 top_color =            texture2D(  tex,
+                                            tcoord - height_step);
+    vec4 top_right_color =      texture2D(  tex,
+                                            tcoord - height_step + width_step);
+    vec4 left_color =           texture2D(  tex,
+                                            tcoord - width_step);
+    vec4 right_color =          texture2D(  tex,
+                                            tcoord + width_step);
+    vec4 center_color =         texture2D(  tex,
+                                            tcoord);
 
-    ret /= 159.0;
-    ret.w = 1.0;
+    vec4 ret =  (top_left_color + top_right_color + bottom_left_color + bottom_right_color) / 16.0 + 
+                    (top_color + bottom_color + left_color + right_color) / 8.0 + center_color / 4.0;
+
+    ret.a = 1.0;
     gl_FragColor = ret;
 }
