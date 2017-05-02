@@ -99,7 +99,7 @@ int main(int argc, const char **argv)
 		// DrawWindowBlurredSoeblRect(&blurred_sobel_tex, -1, -1, 1, 1, &window_blurred_sobel_tex);
 		DrawHarrisRect(&blurred_sobel_tex, -1, -1, 1, 1, &harris_response_tex);
 		DrawNonMaxSupRect(&harris_response_tex, -1, -1, 1, 1, &decision_tex);
-		DrawCornerMarkRect(&y_tex, &decision_tex, -1, -1, 1, 1, &output_tex);
+		DrawCornerRect(&y_tex, &decision_tex, -1, -1, 1, 1, &output_tex);
 		DrawTextureRect(&output_tex, -1, -1, 1, 1, NULL);
 
 		EndFrame();
