@@ -3,61 +3,28 @@ uniform sampler2D tex;
 uniform vec2 texelsize;
 void main(void) 
 {
-    // vec4 ret = vec4(0);
-    // ret +=  2.0 *   (
-    //                     texture2D(tex, tcoord + vec2(-2, -2) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(2, -2) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(-2, 2) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(2, 2) * texelsize)
-    //                 ) + 
-    //         4.0 *   (
-    //                     texture2D(tex, tcoord + vec2(-1, -2) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(1, -2) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(-1, 2) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(1, 2) * texelsize) +
-    //                     texture2D(tex, tcoord + vec2(-2, -1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(2, -1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(-2, 1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(2, 1) * texelsize)
-    //                 ) +
-    //         5.0 *   (
-    //                     texture2D(tex, tcoord + vec2(0, -2) * texelsize) +
-    //                     texture2D(tex, tcoord + vec2(0, 2) * texelsize) +
-    //                     texture2D(tex, tcoord + vec2(-2, 0) * texelsize) +
-    //                     texture2D(tex, tcoord + vec2(2, 0) * texelsize)
-    //                 ) +
-    //         9.0 *   (
-    //                     texture2D(tex, tcoord + vec2(-1, -1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(1, -1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(-1, 1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(1, 1) * texelsize)
-    //                 ) +
-    //         12.0 *  (
-    //                     texture2D(tex, tcoord + vec2(0, -1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(0, 1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(-1, 0) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(1, 0) * texelsize)
-    //                 ) +
-    //         15.0 * texture2D(tex, vec2(0, 0));
-    // ret /= 159.0;
-    // ret.z = ret.x * ret.y;
-    // ret.w = 1.0;
-    // gl_FragColor = ret;
+    vec2 width_step = vec2(texelsize.r, 0.0);
+    vec2 height_step = vec2(0.0, texelsize.g);
 
-    vec4 col = vec4(0);
-    float total_added = 0.0;
-    for(int xoffset = -1; xoffset <= 1; xoffset++)
-    {
-        for(int yoffset = -1; yoffset <= 1; yoffset++)
-        {
-            vec2 offset = vec2(xoffset,yoffset);
-            float prop = 1.0/(offset.x*offset.x+offset.y*offset.y+1.0);
-            total_added += prop;
-            col += prop*texture2D(tex,tcoord+offset*texelsize);
-        }
-    }
-    col /= total_added;
-    col.z = col.x * col.y;
-    col.w = 1.0;
-    gl_FragColor = col;
+    vec4 bottom_left_color =    texture2D(  tex,
+                                            tcoord + height_step - width_step);
+    vec4 bottom_color =         texture2D(  tex,
+                                            tcoord + height_step);
+    vec4 bottom_right_color =   texture2D(  tex,
+                                            tcoord + height_step + width_step);
+    vec4 top_left_color =       texture2D(  tex,
+                                            tcoord - height_step - width_step);
+    vec4 top_color =            texture2D(  tex,
+                                            tcoord - height_step);
+    vec4 top_right_color =      texture2D(  tex,
+                                            tcoord - height_step + width_step);
+    vec4 left_color =           texture2D(  tex,
+                                            tcoord - width_step);
+    vec4 right_color =          texture2D(  tex,
+                                            tcoord + width_step);
+    vec4 center_color =         texture2D(  tex,
+                                            tcoord);
+
+    gl_FragColor =  (top_left_color + top_right_color + bottom_left_color + bottom_right_color) / 16.0 + 
+                    (top_color + bottom_color + left_color + right_color) / 8.0 + center_color / 4.0;
 }

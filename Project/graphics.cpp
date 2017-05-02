@@ -17,7 +17,10 @@ EGLDisplay GDisplay;
 EGLSurface GSurface;
 EGLContext GContext;
 
+// Define vertex shader
 GfxShader GSimpleVS;
+
+// Define fragment shader
 GfxShader GSimpleFS;
 GfxShader GYUVFS;
 GfxShader GBlurFS;
@@ -26,6 +29,7 @@ GfxShader GWindowFS;
 GfxShader GHarrisFS;
 GfxShader GSelectionFS;
 
+// Define GL Program
 GfxProgram GSimpleProg;
 GfxProgram GYUVProg;
 GfxProgram GBlurProg;
@@ -134,8 +138,10 @@ void InitGraphics()
 	glClearColor(0.15f, 0.25f, 0.35f, 1.0f);
 	glClear( GL_COLOR_BUFFER_BIT );
 
-	//load the test shaders
+	// Load the vertex shader
 	GSimpleVS.LoadVertexShader("simplevertshader.glsl");
+
+	// Load the fragment shader
 	GSimpleFS.LoadFragmentShader("simplefragshader.glsl");
 	GYUVFS.LoadFragmentShader("yuvfragshader.glsl");
 	GBlurFS.LoadFragmentShader("blurfragshader.glsl");
@@ -144,6 +150,7 @@ void InitGraphics()
 	GHarrisFS.LoadFragmentShader("harrisfragshader.glsl");
 	GSelectionFS.LoadFragmentShader("selectfragshader.glsl");
 
+	// Load the GL program
 	GSimpleProg.Create(&GSimpleVS, &GSimpleFS);
 	GYUVProg.Create(&GSimpleVS, &GYUVFS);
 	GBlurProg.Create(&GSimpleVS, &GBlurFS);
@@ -390,7 +397,7 @@ void DrawSobelRect(GfxTexture* texture, float x0, float y0, float x1, float y1, 
 	}
 }
 
-void DrawBlurredSobelRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
+void DrawBlurRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
 {
 	if (render_target)
 	{

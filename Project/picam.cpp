@@ -92,11 +92,11 @@ int main(int argc, const char **argv)
 		BeginFrame();
 
 		DrawSobelRect(&y_tex, -1, -1, 1, 1, &sobel_tex);
-		// DrawBlurredSobelRect(&sobel_tex, -1, -1, 1, 1, &blurred_sobel_tex);
+		DrawBlurRect(&sobel_tex, -1, -1, 1, 1, &blurred_sobel_tex);
 		// DrawWindowBlurredSoeblRect(&blurred_sobel_tex, -1, -1, 1, 1, &window_blurred_sobel_tex);
 		// DrawHarrisRect(&window_blurred_sobel_tex, -1, -1, 1, 1, &harris_response_tex, 0.06);
 		// DrawSelectionRect(&harris_response_tex, -1, -1, 1, 1, &output_tex);
-		DrawTextureRect(&sobel_tex, -1, -1, 1, 1, NULL);
+		DrawTextureRect(&blurred_sobel_tex, -1, -1, 1, 1, NULL);
 
 		EndFrame();
 

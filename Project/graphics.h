@@ -95,14 +95,6 @@ void DrawYUVTextureRect(
     float x1, float y1,
     GfxTexture* render_target
 );
-void DrawBlurredSobelRect(
-    GfxTexture* texture,
-    float x0,
-    float y0,
-    float x1,
-    float y1,
-    GfxTexture* render_target
-);
 void DrawSobelRect(
     GfxTexture* texture,
     float x0,
@@ -111,7 +103,14 @@ void DrawSobelRect(
     float y1,
     GfxTexture* render_target
 );
-
+void DrawBlurRect(
+    GfxTexture* texture,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);
 //New created draw fnction
 void DrawWindowBlurredSoeblRect(
     GfxTexture* texture,
