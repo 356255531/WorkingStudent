@@ -33,6 +33,7 @@ int main(int argc, const char **argv)
 	            blurred_sobel_tex,
 	            window_blurred_sobel_tex,
 	            harris_response_tex,
+	            decision_tex,
 	            output_tex;
 
 	sobel_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
@@ -43,6 +44,8 @@ int main(int argc, const char **argv)
 	window_blurred_sobel_tex.GenerateFrameBuffer();
 	harris_response_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 	harris_response_tex.GenerateFrameBuffer();
+	decision_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
+	decision_tex.GenerateFrameBuffer();
 	output_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 	output_tex.GenerateFrameBuffer();
 	check();
@@ -92,10 +95,11 @@ int main(int argc, const char **argv)
 		BeginFrame();
 
 		DrawSobelRect(&y_tex, -1, -1, 1, 1, &sobel_tex);
-		DrawBlurredSobelRect(&sobel_tex, -1, -1, 1, 1, &blurred_sobel_tex);
-		DrawWindowBlurredSoeblRect(&blurred_sobel_tex, -1, -1, 1, 1, &window_blurred_sobel_tex);
-		DrawHarrisRect(&window_blurred_sobel_tex, -1, -1, 1, 1, &harris_response_tex, 0.06);
-		DrawSelectionRect(&harris_response_tex, -1, -1, 1, 1, &output_tex);
+		DrawBlurRect(&sobel_tex, -1, -1, 1, 1, &blurred_sobel_tex);
+		// DrawWindowBlurredSoeblRect(&blurred_sobel_tex, -1, -1, 1, 1, &window_blurred_sobel_tex);
+		DrawHarrisRect(&blurred_sobel_tex, -1, -1, 1, 1, &harris_response_tex);
+		DrawNonMaxSupRect(&harris_response_tex, -1, -1, 1, 1, &decision_tex);
+		DrawCornerRect(&y_tex, &decision_tex, -1, -1, 1, 1, &output_tex);
 		DrawTextureRect(&output_tex, -1, -1, 1, 1, NULL);
 
 		EndFrame();

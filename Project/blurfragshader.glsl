@@ -3,61 +3,62 @@ uniform sampler2D tex;
 uniform vec2 texelsize;
 void main(void) 
 {
-    // vec4 ret = vec4(0);
-    // ret +=  2.0 *   (
-    //                     texture2D(tex, tcoord + vec2(-2, -2) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(2, -2) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(-2, 2) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(2, 2) * texelsize)
-    //                 ) + 
-    //         4.0 *   (
-    //                     texture2D(tex, tcoord + vec2(-1, -2) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(1, -2) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(-1, 2) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(1, 2) * texelsize) +
-    //                     texture2D(tex, tcoord + vec2(-2, -1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(2, -1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(-2, 1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(2, 1) * texelsize)
-    //                 ) +
-    //         5.0 *   (
-    //                     texture2D(tex, tcoord + vec2(0, -2) * texelsize) +
-    //                     texture2D(tex, tcoord + vec2(0, 2) * texelsize) +
-    //                     texture2D(tex, tcoord + vec2(-2, 0) * texelsize) +
-    //                     texture2D(tex, tcoord + vec2(2, 0) * texelsize)
-    //                 ) +
-    //         9.0 *   (
-    //                     texture2D(tex, tcoord + vec2(-1, -1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(1, -1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(-1, 1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(1, 1) * texelsize)
-    //                 ) +
-    //         12.0 *  (
-    //                     texture2D(tex, tcoord + vec2(0, -1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(0, 1) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(-1, 0) * texelsize) + 
-    //                     texture2D(tex, tcoord + vec2(1, 0) * texelsize)
-    //                 ) +
-    //         15.0 * texture2D(tex, vec2(0, 0));
-    // ret /= 159.0;
-    // ret.z = ret.x * ret.y;
-    // ret.w = 1.0;
-    // gl_FragColor = ret;
+    vec2 width_step = vec2(texelsize, 0.0);
+    vec2 height_step = vec2(0.0, texelsize);
 
-    vec4 col = vec4(0);
-    float total_added = 0.0;
-    for(int xoffset = -1; xoffset <= 1; xoffset++)
-    {
-        for(int yoffset = -1; yoffset <= 1; yoffset++)
-        {
-            vec2 offset = vec2(xoffset,yoffset);
-            float prop = 1.0/(offset.x*offset.x+offset.y*offset.y+1.0);
-            total_added += prop;
-            col += prop*texture2D(tex,tcoord+offset*texelsize);
-        }
-    }
-    col /= total_added;
-    col.z = col.x * col.y;
-    col.w = 1.0;
-    gl_FragColor = col;
+    vec4 ret = vec4(0);
+    ret +=  2.0 *   (   texture2D(  tex, 
+                                    tcoord - 2 * height_step - 2 * width_step) + 
+                        texture2D(  tex, 
+                                    tcoord - 2 * height_step + 2 * width_step) + 
+                        texture2D(  tex, 
+                                    tcoord + 2 * height_step - 2 * width_step) + 
+                        texture2D(  tex, 
+                                    tcoord + 2 * height_step + 2 * width_step)） + 
+            4.0 *   (   texture2D(  tex, 
+                                    tcoord - 2 * height_step - width_step) + 
+                        texture2D(  tex, 
+                                    tcoord - 2 * height_step + width_step) + 
+                        texture2D(  tex, 
+                                    tcoord + 2 * height_step - width_step) + 
+                        texture2D(  tex, 
+                                    tcoord + 2 * height_step + width_step) +
+                        texture2D(  tex, 
+                                    tcoord - height_step - 2 * width_step) + 
+                        texture2D(  tex, 
+                                    tcoord - height_step + 2 * width_step) + 
+                        texture2D(  tex, 
+                                    tcoord + height_step - 2 * width_step) + 
+                        texture2D(  tex, 
+                                    tcoord + height_step + 2 * width_step)) +
+            5.0 *   (   texture2D(  tex, 
+                                    tcoord - 2 * height_step) +
+                        texture2D(  tex, 
+                                    tcoord + 2 * height_step) +
+                        texture2D(  tex, 
+                                    tcoord - 2 * width_step) +
+                        texture2D(  tex, 
+                                    tcoord + 2 * width_step)) +
+            9.0 *   (   texture2D(  tex, 
+                                    tcoord - height_step - width_step) + 
+                        texture2D(  tex, 
+                                    tcoord - height_step + width_step) + 
+                        texture2D(  tex, 
+                                    tcoord + height_step - width_step) + 
+                        texture2D(  tex, 
+                                    tcoord + height_step + width_step)) +
+            12.0 *  (   texture2D(  tex, 
+                                    tcoord - height_step) + 
+                        texture2D(  tex, 
+                                    tcoord + height_step) + 
+                        texture2D(  tex, 
+                                    tcoord - width_step) + 
+                        texture2D(  tex, 
+                                    tcoord + width_step)) +
+            15.0 * texture2D(   tex, 
+                                tcoord);
+
+    ret /= 159.0;
+    ret.w = 1.0;
+    gl_FragColor = ret;
 }

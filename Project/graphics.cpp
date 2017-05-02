@@ -17,22 +17,26 @@ EGLDisplay GDisplay;
 EGLSurface GSurface;
 EGLContext GContext;
 
+// Global vertex shader variables
 GfxShader GSimpleVS;
+
+// Global fragement shader variables
 GfxShader GSimpleFS;
 GfxShader GYUVFS;
 GfxShader GBlurFS;
 GfxShader GSobelFS;
 GfxShader GWindowFS;
 GfxShader GHarrisFS;
-GfxShader GSelectionFS;
+GfxShader GNonMaxSupFS;
 
+// Global GL program
 GfxProgram GSimpleProg;
 GfxProgram GYUVProg;
 GfxProgram GBlurProg;
 GfxProgram GSobelProg;
 GfxProgram GWindowProg;
 GfxProgram GHarrisProg;
-GfxProgram GSelectionProg;
+GfxProgram GNonMaxSupProg;
 
 GLuint GQuadVertexBuffer;
 
@@ -134,15 +138,17 @@ void InitGraphics()
 	glClearColor(0.15f, 0.25f, 0.35f, 1.0f);
 	glClear( GL_COLOR_BUFFER_BIT );
 
-	//load the test shaders
+	// Load the vertex shaders
 	GSimpleVS.LoadVertexShader("simplevertshader.glsl");
+
+	// Load the fragment shaders
 	GSimpleFS.LoadFragmentShader("simplefragshader.glsl");
 	GYUVFS.LoadFragmentShader("yuvfragshader.glsl");
 	GBlurFS.LoadFragmentShader("blurfragshader.glsl");
 	GSobelFS.LoadFragmentShader("sobelfragshader.glsl");
 	GWindowFS.LoadFragmentShader("windowfragshader.glsl");
 	GHarrisFS.LoadFragmentShader("harrisfragshader.glsl");
-	GSelectionFS.LoadFragmentShader("selectfragshader.glsl");
+	GNonMaxSupFS.LoadFragmentShader("nonmaxsupfragshader.glsl");
 
 	GSimpleProg.Create(&GSimpleVS, &GSimpleFS);
 	GYUVProg.Create(&GSimpleVS, &GYUVFS);
@@ -150,7 +156,7 @@ void InitGraphics()
 	GSobelProg.Create(&GSimpleVS, &GSobelFS);
 	GWindowProg.Create(&GSimpleVS, &GWindowFS);
 	GHarrisProg.Create(&GSimpleVS, &GHarrisFS);
-	GSelectionProg.Create(&GSimpleVS, &GSelectionFS);
+	GNonMaxSupProg.Create(&GSimpleVS, &GNonMaxSupFS);
 
 	check();
 
@@ -390,7 +396,7 @@ void DrawSobelRect(GfxTexture* texture, float x0, float y0, float x1, float y1, 
 	}
 }
 
-void DrawBlurredSobelRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
+void DrawBlurRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
 {
 	if (render_target)
 	{
@@ -461,7 +467,7 @@ void DrawWindowBlurredSoeblRect(GfxTexture* texture, float x0, float y0, float x
 	}
 }
 
-void DrawHarrisRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target, float threshold) {
+void DrawHarrisRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target) {
 	if (render_target)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, render_target->GetFramebufferId());
@@ -496,7 +502,7 @@ void DrawHarrisRect(GfxTexture* texture, float x0, float y0, float x1, float y1,
 	}
 }
 
-void DrawSelectionRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
+void DrawNonMaxSupRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
 {
 	if (render_target)
 	{
@@ -505,12 +511,12 @@ void DrawSelectionRect(GfxTexture* texture, float x0, float y0, float x1, float 
 		check();
 	}
 
-	glUseProgram(GSelectionProg.GetId());	check();
+	glUseProgram(GNonMaxSupProg.GetId());	check();
 
-	glUniform2f(glGetUniformLocation(GSelectionProg.GetId(), "offset"), x0, y0);
-	glUniform2f(glGetUniformLocation(GSelectionProg.GetId(), "scale"), x1 - x0, y1 - y0);
-	glUniform1i(glGetUniformLocation(GSelectionProg.GetId(), "tex"), 0);
-	glUniform2f(glGetUniformLocation(GSelectionProg.GetId(), "texelsize"), 1.f / texture->GetWidth(), 1.f / texture->GetHeight());
+	glUniform2f(glGetUniformLocation(GNonMaxSupProg.GetId(), "offset"), x0, y0);
+	glUniform2f(glGetUniformLocation(GNonMaxSupProg.GetId(), "scale"), x1 - x0, y1 - y0);
+	glUniform1i(glGetUniformLocation(GNonMaxSupProg.GetId(), "tex"), 0);
+	glUniform2f(glGetUniformLocation(GNonMaxSupProg.GetId(), "texelsize"), 1.f / texture->GetWidth(), 1.f / texture->GetHeight());
 	check();
 
 	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
