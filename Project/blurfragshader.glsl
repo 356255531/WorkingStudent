@@ -25,6 +25,9 @@ void main(void)
     vec4 center_color =         texture2D(  tex,
                                             tcoord);
 
-    gl_FragColor =  (top_left_color + top_right_color + bottom_left_color + bottom_right_color) / 16.0 + 
+    vec4 ret =  (top_left_color + top_right_color + bottom_left_color + bottom_right_color) / 16.0 + 
                     (top_color + bottom_color + left_color + right_color) / 8.0 + center_color / 4.0;
+
+    ret.a = 1.0;
+    gl_FragColor = ret;
 }
