@@ -17,7 +17,6 @@ EGLDisplay GDisplay;
 EGLSurface GSurface;
 EGLContext GContext;
 
-
 // Define vertex shader
 GfxShader GSimpleVS;
 
@@ -29,9 +28,10 @@ GfxShader GSobelFS;
 GfxShader GWindowFS;
 GfxShader GHarrisFS;
 GfxShader GNonMaxSupFS;
+<<<<<<< HEAD
 GfxShader GCorMarkFS;
 
-// Global GL program
+// Define GL Program
 GfxProgram GSimpleProg;
 GfxProgram GYUVProg;
 GfxProgram GBlurProg;
@@ -142,17 +142,17 @@ void InitGraphics()
 	glClear( GL_COLOR_BUFFER_BIT );
 
 	// Load the vertex shader
-	GSimpleVS.LoadVertexShader("simplevertshader.glsl");
+	GSimpleVS.LoadVertexShader("VertexShader/simplevertshader.glsl");
 
 	// Load the fragment shader
-	GSimpleFS.LoadFragmentShader("simplefragshader.glsl");
-	GYUVFS.LoadFragmentShader("yuvfragshader.glsl");
-	GBlurFS.LoadFragmentShader("blurfragshader.glsl");
-	GSobelFS.LoadFragmentShader("sobelfragshader.glsl");
-	GWindowFS.LoadFragmentShader("windowfragshader.glsl");
-	GHarrisFS.LoadFragmentShader("harrisfragshader.glsl");
-	GNonMaxSupFS.LoadFragmentShader("nonmaxsupfragshader.glsl");
-	GCorMarkFS.LoadFragmentShader("cornermarkfragshader.glsl");
+	GSimpleFS.LoadFragmentShader("FragmentShader/simplefragshader.glsl");
+	GYUVFS.LoadFragmentShader("FragmentShader/yuvfragshader.glsl");
+	GBlurFS.LoadFragmentShader("FragmentShader/blurfragshader.glsl");
+	GSobelFS.LoadFragmentShader("FragmentShader/sobelfragshader.glsl");
+	GWindowFS.LoadFragmentShader("FragmentShader/windowfragshader.glsl");
+	GHarrisFS.LoadFragmentShader("FragmentShader/harrisfragshader.glsl");
+	GNonMaxSupFS.LoadFragmentShader("FragmentShader/nonmaxsupfragshader.glsl");
+	GCorMarkFS.LoadFragmentShader("FragmentShader/cornermarkfragshader.glsl");
 
 	// Load the GL program
 	GSimpleProg.Create(&GSimpleVS, &GSimpleFS);
@@ -535,45 +535,6 @@ void DrawNonMaxSupRect(GfxTexture* texture, float x0, float y0, float x1, float 
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	if (render_target)
-	{
-		//glFinish();	check();
-		//glFlush(); check();
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		glViewport ( 0, 0, GScreenWidth, GScreenHeight );
-	}
-}
-void DrawCornerMarkRect(GfxTexture* ytexture, GfxTexture* decision_texture, float x0, float y0, float x1, float y1, GfxTexture* render_target) {
-	if (render_target)
-	{
-		glBindFramebuffer(GL_FRAMEBUFFER, render_target->GetFramebufferId());
-		glViewport ( 0, 0, render_target->GetWidth(), render_target->GetHeight() );
-		check();
-	}
-
-	glUseProgram(GCornerMarkProg.GetId());	check();
-
-	glUniform2f(glGetUniformLocation(GCornerMarkProg.GetId(), "offset"), x0, y0);
-	glUniform2f(glGetUniformLocation(GCornerMarkProg.GetId(), "scale"), x1 - x0, y1 - y0);
-	glUniform1i(glGetUniformLocation(GCornerMarkProg.GetId(), "tex0"), 0);
-	glUniform1i(glGetUniformLocation(GCornerMarkProg.GetId(), "tex1"), 1);
-	check();
-
-	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, ytexture->GetId());	check();
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, decision_texture->GetId());	check();
-	glActiveTexture(GL_TEXTURE0);
-
-	GLuint loc = glGetAttribLocation(GCornerMarkProg.GetId(), "vertex");
-	glVertexAttribPointer(loc, 4, GL_FLOAT, 0, 16, 0);	check();
-	glEnableVertexAttribArray(loc);	check();
-	glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 ); check();
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-
 	if (render_target)
 	{
 		//glFinish();	check();

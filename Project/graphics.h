@@ -128,7 +128,8 @@ void DrawHarrisRect(
     float y0,
     float x1,
     float y1,
-    GfxTexture* render_target);
+    GfxTexture* render_target
+);
 void DrawNonMaxSupRect(
     GfxTexture* texture,
     float x0,
