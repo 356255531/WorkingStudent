@@ -17,17 +17,11 @@ EGLDisplay GDisplay;
 EGLSurface GSurface;
 EGLContext GContext;
 
-<<<<<<< HEAD
-// Global vertex shader variables
-GfxShader GSimpleVS;
 
-// Global fragement shader variables
-=======
 // Define vertex shader
 GfxShader GSimpleVS;
 
 // Define fragment shader
->>>>>>> debug
 GfxShader GSimpleFS;
 GfxShader GYUVFS;
 GfxShader GBlurFS;
@@ -35,14 +29,9 @@ GfxShader GSobelFS;
 GfxShader GWindowFS;
 GfxShader GHarrisFS;
 GfxShader GNonMaxSupFS;
-<<<<<<< HEAD
 GfxShader GCorMarkFS;
 
 // Global GL program
-=======
-
-// Define GL Program
->>>>>>> debug
 GfxProgram GSimpleProg;
 GfxProgram GYUVProg;
 GfxProgram GBlurProg;
@@ -50,10 +39,7 @@ GfxProgram GSobelProg;
 GfxProgram GWindowProg;
 GfxProgram GHarrisProg;
 GfxProgram GNonMaxSupProg;
-<<<<<<< HEAD
 GfxProgram GCorMarkProg;
-=======
->>>>>>> debug
 
 GLuint GQuadVertexBuffer;
 
@@ -155,17 +141,10 @@ void InitGraphics()
 	glClearColor(0.15f, 0.25f, 0.35f, 1.0f);
 	glClear( GL_COLOR_BUFFER_BIT );
 
-<<<<<<< HEAD
-	// Load the vertex shaders
-	GSimpleVS.LoadVertexShader("simplevertshader.glsl");
-
-	// Load the fragment shaders
-=======
 	// Load the vertex shader
 	GSimpleVS.LoadVertexShader("simplevertshader.glsl");
 
 	// Load the fragment shader
->>>>>>> debug
 	GSimpleFS.LoadFragmentShader("simplefragshader.glsl");
 	GYUVFS.LoadFragmentShader("yuvfragshader.glsl");
 	GBlurFS.LoadFragmentShader("blurfragshader.glsl");
@@ -173,10 +152,7 @@ void InitGraphics()
 	GWindowFS.LoadFragmentShader("windowfragshader.glsl");
 	GHarrisFS.LoadFragmentShader("harrisfragshader.glsl");
 	GNonMaxSupFS.LoadFragmentShader("nonmaxsupfragshader.glsl");
-<<<<<<< HEAD
 	GCorMarkFS.LoadFragmentShader("cornermarkfragshader.glsl");
-=======
->>>>>>> debug
 
 	// Load the GL program
 	GSimpleProg.Create(&GSimpleVS, &GSimpleFS);
@@ -186,10 +162,7 @@ void InitGraphics()
 	GWindowProg.Create(&GSimpleVS, &GWindowFS);
 	GHarrisProg.Create(&GSimpleVS, &GHarrisFS);
 	GNonMaxSupProg.Create(&GSimpleVS, &GNonMaxSupFS);
-<<<<<<< HEAD
 	GCorMarkProg.Create(&GSimpleVS, &GCorMarkFS);
-=======
->>>>>>> debug
 
 	check();
 
@@ -465,7 +438,7 @@ void DrawBlurRect(GfxTexture* texture, float x0, float y0, float x1, float y1, G
 	}
 }
 
-void DrawWindowBlurredSoeblRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target) {
+void DrawAdd3x3WindowRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target) {
 	if (render_target)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, render_target->GetFramebufferId());
@@ -534,11 +507,7 @@ void DrawHarrisRect(GfxTexture* texture, float x0, float y0, float x1, float y1,
 	}
 }
 
-<<<<<<< HEAD
-void DrawNonMaxSupRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
-=======
 void DrawNonMaxSupRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target, float threshold)
->>>>>>> debug
 {
 	if (render_target)
 	{
@@ -552,10 +521,7 @@ void DrawNonMaxSupRect(GfxTexture* texture, float x0, float y0, float x1, float 
 	glUniform2f(glGetUniformLocation(GNonMaxSupProg.GetId(), "offset"), x0, y0);
 	glUniform2f(glGetUniformLocation(GNonMaxSupProg.GetId(), "scale"), x1 - x0, y1 - y0);
 	glUniform1i(glGetUniformLocation(GNonMaxSupProg.GetId(), "tex"), 0);
-<<<<<<< HEAD
-=======
 	glUniform1f(glGetUniformLocation(GNonMaxSupProg.GetId(), "threshold"), threshold);
->>>>>>> debug
 	glUniform2f(glGetUniformLocation(GNonMaxSupProg.GetId(), "texelsize"), 1.f / texture->GetWidth(), 1.f / texture->GetHeight());
 	check();
 
