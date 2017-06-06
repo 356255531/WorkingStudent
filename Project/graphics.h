@@ -77,7 +77,7 @@ public:
 	void Save(const char* fname);
 };
 
-void SaveFrameBuffer(const char* fname);
+void* SaveFrameBuffer(void* image);
 
 void DrawTextureRect(
     GfxTexture* texture,

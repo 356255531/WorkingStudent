@@ -30,16 +30,25 @@ void main(void)
                                             tcoord);
 
     // Use a tiebreaker for pixels to the left and immediately above this one
-    float multiplier = 1.0 - step(center_color.r, top_color);
-    multiplier = multiplier * 1.0 - step(center_color.r, top_left_color);
-    multiplier = multiplier * 1.0 - step(center_color.r, left_color);
-    multiplier = multiplier * 1.0 - step(center_color.r, bottom_left_color);
+    // float multiplier = 1.0 - step(center_color.r, top_color);
+    // multiplier = multiplier * 1.0 - step(center_color.r, top_left_color);
+    // multiplier = multiplier * 1.0 - step(center_color.r, left_color);
+    // multiplier = multiplier * 1.0 - step(center_color.r, bottom_left_color);
 
-    float max_value = max(center_color.r, bottom_color);
-    max_value = max(max_value, bottom_right_color);
-    max_value = max(max_value, right_color);
-    max_value = max(max_value, top_right_color);
-    max_value = max(max_value, threshold);
+    // float max_value = max(center_color.r, bottom_color);
+    // max_value = max(max_value, bottom_right_color);
+    // max_value = max(max_value, right_color);
+    // max_value = max(max_value, top_right_color);
 
-    gl_FragColor = vec4((center_color.rgb * step(max_value, center_color.r) * multiplier), 1.0);
+    float max_value_1 = max(bottom_left_color, bottom_left_color);
+    float max_value_2 = max(bottom_right_color, left_color);
+    float max_value_3 = max(right_color, top_color);
+    float max_value_4 = max(top_right_color, top_left_color);
+    max_value_1 = max(max_value_1, max_value_2);
+    max_value_3 = max(max_value_3, max_value_4);
+    max_value_1 = max(max_value_1, max_value_3);
+    max_value_1 = max(max_value_1, center_color.r);
+
+    // gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    gl_FragColor = vec4((vec3(1.0, 0.0, 0.0) * step(0.5, max_value_1) + center_color.rgb * step(max_value_1, 0.5)), 1.0);
 }

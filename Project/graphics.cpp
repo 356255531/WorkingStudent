@@ -634,19 +634,14 @@ void GfxTexture::SetPixels(const void* data)
 	check();
 }
 
-void SaveFrameBuffer(const char* fname)
+void* SaveFrameBuffer(void *image)
 {
-	void* image = malloc(GScreenWidth * GScreenHeight * 4);
+	image = malloc(GScreenWidth * GScreenHeight * 4);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	check();
 	glReadPixels(0, 0, GScreenWidth, GScreenHeight, GL_RGBA, GL_UNSIGNED_BYTE, image);
 
-	unsigned error = lodepng::encode(fname, (const unsigned char*)image, GScreenWidth, GScreenHeight, LCT_RGBA);
-	if (error)
-		printf("error: %d\n", error);
-
-	free(image);
-
+	return image;
 }
 
 void GfxTexture::Save(const char* fname)

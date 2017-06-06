@@ -95,6 +95,15 @@ int main(int argc, const char **argv)
 		BeginFrame();
 
 		DrawSobelRect(&y_tex, -1, -1, 1, 1, &sobel_tex);
+
+		// void* image;
+		// SaveFrameBuffer(image);
+		// for (int j = 0; j < MAIN_TEXTURE_HEIGHT * MAIN_TEXTURE_WIDTH; ++j) {
+		// 	printf("%d ", *((uint8_t*)image+j));
+		// }
+		// printf("\n");
+		// free(image);
+
 		DrawBlurRect(&sobel_tex, -1, -1, 1, 1, &blurred_sobel_tex);
 		// DrawWindowBlurredSoeblRect(&blurred_sobel_tex, -1, -1, 1, 1, &window_blurred_sobel_tex);
 		DrawHarrisRect(&blurred_sobel_tex, -1, -1, 1, 1, &harris_response_tex);
