@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <unistd.h>
-#include "camera.h"
-#include "graphics.h"
 #include <time.h>
 #include <curses.h>
+
+#include "camera.h"
+#include "graphics.h"
+#include "tracking_toolbox.h"
 
 #define MAIN_TEXTURE_WIDTH 768
 #define MAIN_TEXTURE_HEIGHT 512
@@ -26,6 +28,7 @@ int main(int argc, const char **argv)
 	GfxTexture y_tex, u_tex, v_tex;
 	y_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 	// u_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH >> 1, MAIN_TEXTURE_HEIGHT >> 1);
+
 	// v_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH >> 1, MAIN_TEXTURE_HEIGHT >> 1);
 
 	// Create the pipline textures
