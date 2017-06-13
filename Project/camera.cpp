@@ -258,9 +258,8 @@ void CCamera::Release()
 		delete Output;
 		Output = NULL;
 	}
-
+	printf("fuck\n");
 	if(CameraComponent)
-		mmal_component_disable(CameraComponent);
 		mmal_component_destroy(CameraComponent);
 
 	CameraComponent = NULL;
@@ -384,10 +383,8 @@ void CCameraOutput::Release()
 	if(BufferPool)
 		mmal_port_pool_destroy(BufferPort,BufferPool);
 	if(Connection)
-		mmal_connection_disable(Connection);
 		mmal_connection_destroy(Connection);
 	if(ResizerComponent)
-		mmal_component_disable(ResizerComponent);
 		mmal_component_destroy(ResizerComponent);
 	memset(this,0,sizeof(CCameraOutput));
 }

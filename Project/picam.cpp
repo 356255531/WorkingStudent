@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include <time.h>
 #include <curses.h>
+#include <boost/shared_ptr.hpp>
+#include <boost/tuple/tuple.hpp>
 
 #include "camera.h"
 #include "graphics.h"
@@ -27,6 +29,10 @@ int main(int argc, const char **argv)
 	// Create the yuv textures
 	GfxTexture y_tex, u_tex, v_tex;
 	y_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
+
+	GfxTexture y_read_tex;
+	y_read_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+	y_read_tex.GenerateFrameBuffer();
 	// u_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH >> 1, MAIN_TEXTURE_HEIGHT >> 1);
 
 	// v_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH >> 1, MAIN_TEXTURE_HEIGHT >> 1);
@@ -70,6 +76,11 @@ int main(int argc, const char **argv)
 	clear();
 	nodelay(stdscr, TRUE);
 
+	boost::shared_ptr<Image> origin_img(new Image());
+	boost::shared_ptr<Image> new_origin_img(new Image());
+	boost::shared_ptr<Image> feature_map(new Image());
+	boost::shared_ptr<Image> new_feature_map(new Image());
+
 	for (int i = 0; i < 3000; i++)
 	{
 		//spin until we have a camera frame
@@ -98,15 +109,6 @@ int main(int argc, const char **argv)
 		BeginFrame();
 
 		DrawSobelRect(&y_tex, -1, -1, 1, 1, &sobel_tex);
-
-		// void* image;
-		// SaveFrameBuffer(image);
-		// for (int j = 0; j < MAIN_TEXTURE_HEIGHT * MAIN_TEXTURE_WIDTH; ++j) {
-		// 	printf("%d ", *((uint8_t*)image+j));
-		// }
-		// printf("\n");
-		// free(image);
-
 		DrawBlurRect(&sobel_tex, -1, -1, 1, 1, &blurred_sobel_tex);
 		// DrawWindowBlurredSoeblRect(&blurred_sobel_tex, -1, -1, 1, 1, &window_blurred_sobel_tex);
 		DrawHarrisRect(&blurred_sobel_tex, -1, -1, 1, 1, &harris_response_tex);
@@ -114,6 +116,22 @@ int main(int argc, const char **argv)
 		DrawTextureRect(&decision_tex, -1, -1, 1, 1, NULL);
 
 		EndFrame();
+
+		if (0 == i % 10) {
+			DrawTextureRect(&y_tex,-1,-1,1,1,&y_read_tex);
+			origin_img->reload_img(new_origin_img->get_img_ptr());
+			feature_map->reload_img(new_feature_map->get_img_ptr());
+			new_origin_img->load_img(&y_read_tex);
+			new_feature_map->load_img(&decision_tex);
+			boost::tuple<int, int> move_vector = compute_move_vector(
+																		origin_img, 
+																		feature_map, 
+																		new_origin_img, 
+																		new_feature_map,
+																		MAIN_TEXTURE_HEIGHT,
+																		MAIN_TEXTURE_WIDTH
+																	);
+		}
 
 		//read current time
 		clock_gettime(CLOCK_REALTIME, &gettime_now);
