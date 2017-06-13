@@ -28,8 +28,6 @@ GfxShader GSobelFS;
 GfxShader GWindowFS;
 GfxShader GHarrisFS;
 GfxShader GNonMaxSupFS;
-<<<<<<< HEAD
-GfxShader GCorMarkFS;
 
 // Define GL Program
 GfxProgram GSimpleProg;
