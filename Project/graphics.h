@@ -141,4 +141,33 @@ void DrawNonMaxSupRect(
     float threshold=0.06
 );
 
+
+// KLT algorithm
+void DrawTexturePlusRect(    
+    GfxTexture* texture_1,
+    GfxTexture* texture_2,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);
+void DrawTextureDiffRect(    
+    GfxTexture* texture_1,
+    GfxTexture* texture_2,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);
+void DrawTextureMultiRect(    
+    GfxTexture* texture_1,
+    GfxTexture* texture_2,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);
 #endif

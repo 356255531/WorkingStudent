@@ -28,36 +28,51 @@ int main(int argc, const char **argv)
 	CCamera* cam = StartCamera(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT, 30, false);
 
 	// Create the yuv textures
-	GfxTexture y_tex, u_tex, v_tex;
-	y_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
+	// GfxTexture y_tex, u_tex, v_tex;
+	GfxTexture y_tex_1, y_tex_2;
+	y_tex_1.CreateGreyScale(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
+	y_tex_2.CreateGreyScale(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 
-	GfxTexture y_read_tex;
-	y_read_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
-	y_read_tex.GenerateFrameBuffer();
+	GfxTexture sum_tex, diff_tex, sum_prod_tex, time_difference;
+	sum_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+	sum_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+	sum_tex.GenerateFrameBuffer();
+	diff_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+	diff_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+	diff_tex.GenerateFrameBuffer();
+	sum_prod_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+	sum_prod_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+	sum_prod_tex.GenerateFrameBuffer();
+	diff_prod_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+	diff_prod_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+	diff_prod_tex.GenerateFrameBuffer();
+	// GfxTexture y_read_tex;
+	// y_read_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+	// y_read_tex.GenerateFrameBuffer();
 	// u_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH >> 1, MAIN_TEXTURE_HEIGHT >> 1);
 
 	// v_tex.CreateGreyScale(MAIN_TEXTURE_WIDTH >> 1, MAIN_TEXTURE_HEIGHT >> 1);
 
 	// Create the pipline textures
-	GfxTexture 	sobel_tex,
-	            blurred_sobel_tex,
-	            window_blurred_sobel_tex,
-	            harris_response_tex,
-	            decision_tex,
-	            output_tex;
+	GfxTexture 	sobel_tex;
+	//             blurred_sobel_tex,
+	//             window_blurred_sobel_tex,
+	//             harris_response_tex,
+	//             decision_tex,
+	//             output_tex;
 
 	sobel_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 	sobel_tex.GenerateFrameBuffer();
-	blurred_sobel_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
-	blurred_sobel_tex.GenerateFrameBuffer();
-	window_blurred_sobel_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
-	window_blurred_sobel_tex.GenerateFrameBuffer();
-	harris_response_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
-	harris_response_tex.GenerateFrameBuffer();
-	decision_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
-	decision_tex.GenerateFrameBuffer();
-	output_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
-	output_tex.GenerateFrameBuffer();
+	// blurred_sobel_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
+	// blurred_sobel_tex.GenerateFrameBuffer();
+	// window_blurred_sobel_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
+	// window_blurred_sobel_tex.GenerateFrameBuffer();
+	// harris_response_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
+	// harris_response_tex.GenerateFrameBuffer();
+	// decision_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
+	// decision_tex.GenerateFrameBuffer();
+	// output_tex.CreateRGBA(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
+	// output_tex.GenerateFrameBuffer();
 	check();
 
 	printf("Running frame loop\n");
@@ -77,11 +92,13 @@ int main(int argc, const char **argv)
 	clear();
 	nodelay(stdscr, TRUE);
 
-	boost::shared_ptr<Image> origin_img(new Image());
-	boost::shared_ptr<Image> new_origin_img(new Image());
-	boost::shared_ptr<Image> feature_map(new Image());
-	boost::shared_ptr<Image> new_feature_map(new Image());
-
+	// boost::shared_ptr<Image> origin_img(new Image());
+	// boost::shared_ptr<Image> new_origin_img(new Image());
+	// boost::shared_ptr<Image> feature_map(new Image());
+	// boost::shared_ptr<Image> new_feature_map(new Image());
+	int count = 0;
+	GfxTexture* curr_tex_ptr = &y_tex_1;
+	GfxTexture* prev_tex_ptr = &y_tex_1;
 	for (int i = 0; i < 3000; i++)
 	{
 		//spin until we have a camera frame
@@ -100,7 +117,7 @@ int main(int argc, const char **argv)
 			// int upos = ysize;
 			// int vpos = upos + uvsize;
 			//printf("Frame data len: 0x%x, ypitch: 0x%x ysize: 0x%x, uvpitch: 0x%x, uvsize: 0x%x, u at 0x%x, v at 0x%x, total 0x%x\n", frame_sz, ypitch, ysize, uvpitch, uvsize, upos, vpos, vpos+uvsize);
-			y_tex.SetPixels(data);
+			curr_tex_ptr->SetPixels(data);
 			// u_tex.SetPixels(data + upos);
 			// v_tex.SetPixels(data + vpos);
 			cam->EndReadFrame();
@@ -109,13 +126,24 @@ int main(int argc, const char **argv)
 		//begin frame, draw the texture then end frame (the bit of maths just fits the image to the screen while maintaining aspect ratio)
 		BeginFrame();
 
-		DrawSobelRect(&y_tex, -1, -1, 1, 1, &sobel_tex);
-		DrawBlurRect(&sobel_tex, -1, -1, 1, 1, &blurred_sobel_tex);
+		// DrawSobelRect(&y_tex, -1, -1, 1, 1, &sobel_tex);
+		// DrawBlurRect(&sobel_tex, -1, -1, 1, 1, &blurred_sobel_tex);
 		// DrawWindowBlurredSoeblRect(&blurred_sobel_tex, -1, -1, 1, 1, &window_blurred_sobel_tex);
-		DrawHarrisRect(&blurred_sobel_tex, -1, -1, 1, 1, &harris_response_tex);
-		DrawNonMaxSupRect(&harris_response_tex, -1, -1, 1, 1, &decision_tex, 0.1);
-		DrawTextureRect(&decision_tex, -1, -1, 1, 1, NULL);
+		// DrawHarrisRect(&blurred_sobel_tex, -1, -1, 1, 1, &harris_response_tex);
+		// DrawNonMaxSupRect(&harris_response_tex, -1, -1, 1, 1, &decision_tex, 0.1);
+		// DrawTextureRect(&decision_tex, -1, -1, 1, 1, NULL);
 
+		if (5 == count) {
+			DrawTexturePlusRect(prev_tex_ptr, curr_tex_ptr, -1, -1, 1, 1, &sum_tex);
+			DrawTextureDiffRect(prev_tex_ptr, curr_tex_ptr, -1, -1, 1, 1, &diff_tex);
+			DrawSobelRect(&sum_tex, -1, -1, 1, 1, &sobel_tex);
+			DrawTextureMultiRect(&sum_tex, &sobel_tex, curr_tex_ptr, -1, -1, 1, 1, &sum_prod_tex);
+			DrawTextureMultiRect(&diff_tex, &sobel_tex, curr_tex_ptr, -1, -1, 1, 1, &diff_prod_tex);
+			prev_tex_ptr = curr_tex_ptr;
+			curr_tex_ptr = curr_tex_ptr == &y_tex_1? &y_tex_2 : &y_tex_1;
+			count = 0;
+		}
+		count++;
 		EndFrame();
 
 		// if (0 == i % 10) {
