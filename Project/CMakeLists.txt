@@ -11,4 +11,4 @@ include_directories(/opt/vc/userland-master/host_applications/linux/libs/bcm_hos
 link_directories(/opt/vc/lib)
 add_executable(picam picam.cpp camera.cpp cameracontrol.cpp graphics.cpp lodepng.cpp tracking_toolbox.cpp types.cpp)
 
-target_link_libraries(picam libmmal_core.so libmmal_util.so libmmal_vc_client.so libvcos.so libbcm_host.so GLESv2 EGL ncurses ${OpenCV_LIBS})
+target_link_libraries(picam libmmal_core.so libmmal_util.so libmmal_vc_client.so libvcos.so libbcm_host.so GLESv2 EGL ncurses ${OpenCV_LIBS} -lpthread -lm -lboost_system)
