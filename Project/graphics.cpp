@@ -159,7 +159,6 @@ void InitGraphics()
 	GWindowProg.Create(&GSimpleVS, &GWindowFS);
 	GHarrisProg.Create(&GSimpleVS, &GHarrisFS);
 	GNonMaxSupProg.Create(&GSimpleVS, &GNonMaxSupFS);
-	GCorMarkProg.Create(&GSimpleVS, &GCorMarkFS);
 
 	check();
 
