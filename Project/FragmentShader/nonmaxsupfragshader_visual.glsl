@@ -50,5 +50,5 @@ void main(void)
     max_value_1 = max(max_value_1, center_color.r);
 
     // gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
-    gl_FragColor = vec4((vec3(1.0, 1.0, 1.0) * step(0.5, max_value_1)), 1.0);
+    gl_FragColor = vec4((vec3(1.0, 0.0, 0.0) * step(0.5, max_value_1) + center_color.rgb * step(max_value_1, 0.5)), 1.0);
 }

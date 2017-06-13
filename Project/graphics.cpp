@@ -77,7 +77,7 @@ void InitGraphics()
 
 	// get an EGL display connection
 	GDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-	assert(GDisplay != EGL_NO_DISPLAY);
+	assert(GDisplay!=EGL_NO_DISPLAY);
 	check();
 
 	// initialize the EGL display connection
@@ -97,7 +97,7 @@ void InitGraphics()
 
 	// create an EGL rendering context
 	GContext = eglCreateContext(GDisplay, config, EGL_NO_CONTEXT, context_attributes);
-	assert(GContext != EGL_NO_CONTEXT);
+	assert(GContext!=EGL_NO_CONTEXT);
 	check();
 
 	// create an EGL window surface
@@ -118,8 +118,8 @@ void InitGraphics()
 	dispman_update = vc_dispmanx_update_start( 0 );
 
 	dispman_element = vc_dispmanx_element_add ( dispman_update, dispman_display,
-	                  0/*layer*/, &dst_rect, 0/*src*/,
-	                  &src_rect, DISPMANX_PROTECTION_NONE, 0 /*alpha*/, 0/*clamp*/, (DISPMANX_TRANSFORM_T)0/*transform*/);
+		0/*layer*/, &dst_rect, 0/*src*/,
+		&src_rect, DISPMANX_PROTECTION_NONE, 0 /*alpha*/, 0/*clamp*/, (DISPMANX_TRANSFORM_T)0/*transform*/);
 
 	nativewindow.element = dispman_element;
 	nativewindow.width = GScreenWidth;
@@ -151,8 +151,7 @@ void InitGraphics()
 	GSobelFS.LoadFragmentShader("FragmentShader/sobelfragshader.glsl");
 	GWindowFS.LoadFragmentShader("FragmentShader/windowfragshader.glsl");
 	GHarrisFS.LoadFragmentShader("FragmentShader/harrisfragshader.glsl");
-	GNonMaxSupFS.LoadFragmentShader("FragmentShader/nonmaxsupfragshader.glsl");
-	GCorMarkFS.LoadFragmentShader("FragmentShader/cornermarkfragshader.glsl");
+	GNonMaxSupFS.LoadFragmentShader("FragmentShader/nonmaxsupfragshader_visual.glsl");
 
 	// Load the GL program
 	GSimpleProg.Create(&GSimpleVS, &GSimpleFS);
@@ -640,14 +639,14 @@ void GfxTexture::SetPixels(const void* data)
 
 void SaveFrameBuffer(const char* fname)
 {
-	void* image = malloc(GScreenWidth * GScreenHeight * 4);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	void* image = malloc(GScreenWidth*GScreenHeight*4);
+	glBindFramebuffer(GL_FRAMEBUFFER,0);
 	check();
-	glReadPixels(0, 0, GScreenWidth, GScreenHeight, GL_RGBA, GL_UNSIGNED_BYTE, image);
+	glReadPixels(0,0,GScreenWidth,GScreenHeight, GL_RGBA, GL_UNSIGNED_BYTE, image);
 
 	unsigned error = lodepng::encode(fname, (const unsigned char*)image, GScreenWidth, GScreenHeight, LCT_RGBA);
-	if (error)
-		printf("error: %d\n", error);
+	if(error) 
+		printf("error: %d\n",error);
 
 	free(image);
 
@@ -655,16 +654,44 @@ void SaveFrameBuffer(const char* fname)
 
 void GfxTexture::Save(const char* fname)
 {
+	void* image = malloc(Width*Height*4);
+	glBindFramebuffer(GL_FRAMEBUFFER,FramebufferId);
+	check();
+	glReadPixels(0,0,Width,Height,IsRGBA ? GL_RGBA : GL_LUMINANCE, GL_UNSIGNED_BYTE, image);
+	check();
+	glBindFramebuffer(GL_FRAMEBUFFER,0);
+
+	unsigned error = lodepng::encode(fname, (const unsigned char*)image, Width, Height, IsRGBA ? LCT_RGBA : LCT_GREY);
+	if(error) 
+		printf("error: %d\n",error);
+
+	free(image);
+}
+
+void* GfxTexture::ret_img() {
 	void* image = malloc(Width * Height * 4);
 	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferId);
 	check();
 	glReadPixels(0, 0, Width, Height, IsRGBA ? GL_RGBA : GL_LUMINANCE, GL_UNSIGNED_BYTE, image);
 	check();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	return image;
+}
 
-	unsigned error = lodepng::encode(fname, (const unsigned char*)image, Width, Height, IsRGBA ? LCT_RGBA : LCT_GREY);
-	if (error)
-		printf("error: %d\n", error);
+Image::Image() {}
 
-	free(image);
+Image::~Image() {
+	free(this->img_ptr);
+}
+
+void Image::load_img(GfxTexture* tex) {
+	this->img_ptr = tex->ret_img();
+}
+
+void Image::reload_img(void* new_img_ptr) {
+	this->img_ptr = new_img_ptr;
+}
+
+void* Image::get_img_ptr() {
+	return img_ptr;
 }
