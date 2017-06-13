@@ -33,17 +33,13 @@ int main(int argc, const char **argv)
 	y_tex_1.CreateGreyScale(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 	y_tex_2.CreateGreyScale(MAIN_TEXTURE_WIDTH, MAIN_TEXTURE_HEIGHT);
 
-	GfxTexture sum_tex, diff_tex, sum_prod_tex, time_difference;
-	sum_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
+	GfxTexture sum_tex, diff_tex, sum_prod_tex, diff_prod_tex;
 	sum_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
 	sum_tex.GenerateFrameBuffer();
 	diff_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
-	diff_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
 	diff_tex.GenerateFrameBuffer();
 	sum_prod_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
-	sum_prod_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
 	sum_prod_tex.GenerateFrameBuffer();
-	diff_prod_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
 	diff_prod_tex.CreateRGBA(MAIN_TEXTURE_WIDTH,MAIN_TEXTURE_HEIGHT);
 	diff_prod_tex.GenerateFrameBuffer();
 	// GfxTexture y_read_tex;
@@ -137,8 +133,8 @@ int main(int argc, const char **argv)
 			DrawTexturePlusRect(prev_tex_ptr, curr_tex_ptr, -1, -1, 1, 1, &sum_tex);
 			DrawTextureDiffRect(prev_tex_ptr, curr_tex_ptr, -1, -1, 1, 1, &diff_tex);
 			DrawSobelRect(&sum_tex, -1, -1, 1, 1, &sobel_tex);
-			DrawTextureMultiRect(&sum_tex, &sobel_tex, curr_tex_ptr, -1, -1, 1, 1, &sum_prod_tex);
-			DrawTextureMultiRect(&diff_tex, &sobel_tex, curr_tex_ptr, -1, -1, 1, 1, &diff_prod_tex);
+			DrawTextureMultiRect(&sum_tex, &sobel_tex, -1, -1, 1, 1, &sum_prod_tex);
+			DrawTextureMultiRect(&diff_tex, &sobel_tex, -1, -1, 1, 1, &diff_prod_tex);
 			prev_tex_ptr = curr_tex_ptr;
 			curr_tex_ptr = curr_tex_ptr == &y_tex_1? &y_tex_2 : &y_tex_1;
 			count = 0;
