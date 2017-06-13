@@ -149,7 +149,7 @@ void InitGraphics()
 	GSobelFS.LoadFragmentShader("FragmentShader/sobelfragshader.glsl");
 	GWindowFS.LoadFragmentShader("FragmentShader/windowfragshader.glsl");
 	GHarrisFS.LoadFragmentShader("FragmentShader/harrisfragshader.glsl");
-	GNonMaxSupFS.LoadFragmentShader("FragmentShader/nonmaxsupfragshader.glsl");
+	GNonMaxSupFS.LoadFragmentShader("FragmentShader/nonmaxsupfragshader_visual.glsl");
 
 	// Load the GL program
 	GSimpleProg.Create(&GSimpleVS, &GSimpleFS);

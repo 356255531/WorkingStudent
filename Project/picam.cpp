@@ -8,6 +8,7 @@
 #include "camera.h"
 #include "graphics.h"
 #include "tracking_toolbox.h"
+#include "types.h"
 
 #define MAIN_TEXTURE_WIDTH 768
 #define MAIN_TEXTURE_HEIGHT 512
@@ -117,21 +118,21 @@ int main(int argc, const char **argv)
 
 		EndFrame();
 
-		if (0 == i % 10) {
-			DrawTextureRect(&y_tex,-1,-1,1,1,&y_read_tex);
-			origin_img->reload_img(new_origin_img->get_img_ptr());
-			feature_map->reload_img(new_feature_map->get_img_ptr());
-			new_origin_img->load_img(&y_read_tex);
-			new_feature_map->load_img(&decision_tex);
-			boost::tuple<int, int> move_vector = compute_move_vector(
-																		origin_img, 
-																		feature_map, 
-																		new_origin_img, 
-																		new_feature_map,
-																		MAIN_TEXTURE_HEIGHT,
-																		MAIN_TEXTURE_WIDTH
-																	);
-		}
+		// if (0 == i % 10) {
+		// 	DrawTextureRect(&y_tex,-1,-1,1,1,&y_read_tex);
+		// 	origin_img->reload_img(new_origin_img->get_img_ptr());
+		// 	feature_map->reload_img(new_feature_map->get_img_ptr());
+		// 	new_origin_img->load_img(&y_read_tex);
+		// 	new_feature_map->load_img(&decision_tex);
+		// 	boost::tuple<int, int> move_vector = compute_move_vector(
+		// 																origin_img, 
+		// 																feature_map, 
+		// 																new_origin_img, 
+		// 																new_feature_map,
+		// 																MAIN_TEXTURE_HEIGHT,
+		// 																MAIN_TEXTURE_WIDTH
+		// 															);
+		// }
 
 		//read current time
 		clock_gettime(CLOCK_REALTIME, &gettime_now);
