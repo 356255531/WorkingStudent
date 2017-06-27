@@ -640,12 +640,12 @@ void DrawTextureDiffRect(GfxTexture* tex_1, GfxTexture* tex_2, float x0, float y
 		check();
 	}
 
-	glUseProgram(GDiffFS.GetId());	check();
+	glUseProgram(GDiffProg.GetId());	check();
 
-	glUniform2f(glGetUniformLocation(GDiffFS.GetId(), "offset"), x0, y0);
-	glUniform2f(glGetUniformLocation(GDiffFS.GetId(), "scale"), x1 - x0, y1 - y0);
-	glUniform1i(glGetUniformLocation(GDiffFS.GetId(), "tex0"), 0);
-	glUniform1i(glGetUniformLocation(GDiffFS.GetId(), "tex1"), 1);
+	glUniform2f(glGetUniformLocation(GDiffProg.GetId(), "offset"), x0, y0);
+	glUniform2f(glGetUniformLocation(GDiffProg.GetId(), "scale"), x1 - x0, y1 - y0);
+	glUniform1i(glGetUniformLocation(GDiffProg.GetId(), "tex0"), 0);
+	glUniform1i(glGetUniformLocation(GDiffProg.GetId(), "tex1"), 1);
 	check();
 
 	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
@@ -655,7 +655,7 @@ void DrawTextureDiffRect(GfxTexture* tex_1, GfxTexture* tex_2, float x0, float y
 	glBindTexture(GL_TEXTURE_2D, tex_2->GetId());	check();
 	glActiveTexture(GL_TEXTURE0);
 
-	GLuint loc = glGetAttribLocation(GDiffFS.GetId(), "vertex");
+	GLuint loc = glGetAttribLocation(GDiffProg.GetId(), "vertex");
 	glVertexAttribPointer(loc, 4, GL_FLOAT, 0, 16, 0);	check();
 	glEnableVertexAttribArray(loc);	check();
 	glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 ); check();
@@ -681,12 +681,12 @@ void DrawTextureMultiRect(GfxTexture* tex_1, GfxTexture* tex_2, float x0, float 
 		check();
 	}
 
-	glUseProgram(GMultiFS.GetId());	check();
+	glUseProgram(GMultiProg.GetId());	check();
 
-	glUniform2f(glGetUniformLocation(GMultiFS.GetId(), "offset"), x0, y0);
-	glUniform2f(glGetUniformLocation(GMultiFS.GetId(), "scale"), x1 - x0, y1 - y0);
-	glUniform1i(glGetUniformLocation(GMultiFS.GetId(), "tex0"), 0);
-	glUniform1i(glGetUniformLocation(GMultiFS.GetId(), "tex1"), 1);
+	glUniform2f(glGetUniformLocation(GMultiProg.GetId(), "offset"), x0, y0);
+	glUniform2f(glGetUniformLocation(GMultiProg.GetId(), "scale"), x1 - x0, y1 - y0);
+	glUniform1i(glGetUniformLocation(GMultiProg.GetId(), "tex0"), 0);
+	glUniform1i(glGetUniformLocation(GMultiProg.GetId(), "tex1"), 1);
 	check();
 
 	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
@@ -696,7 +696,7 @@ void DrawTextureMultiRect(GfxTexture* tex_1, GfxTexture* tex_2, float x0, float 
 	glBindTexture(GL_TEXTURE_2D, tex_2->GetId());	check();
 	glActiveTexture(GL_TEXTURE0);
 
-	GLuint loc = glGetAttribLocation(GMultiFS.GetId(), "vertex");
+	GLuint loc = glGetAttribLocation(GMultiProg.GetId(), "vertex");
 	glVertexAttribPointer(loc, 4, GL_FLOAT, 0, 16, 0);	check();
 	glEnableVertexAttribArray(loc);	check();
 	glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 ); check();
@@ -712,6 +712,7 @@ void DrawTextureMultiRect(GfxTexture* tex_1, GfxTexture* tex_2, float x0, float 
 		glViewport ( 0, 0, GScreenWidth, GScreenHeight );
 	}
 }
+
 bool GfxTexture::CreateRGBA(int width, int height, const void* data)
 {
 	Width = width;

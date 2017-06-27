@@ -9,5 +9,5 @@ void main(void)
     vec4 tex1_pixel =   texture2D(  tex1,
                                     tcoord);
 
-    gl_FragColor = tex0_pixel * tex1_pixel;
+    gl_FragColor = tex1_pixel * tex0_pixel;
 }
