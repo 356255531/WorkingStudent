@@ -1,0 +1,28 @@
+var annotated_dup =
+[
+    [ "CCamera", "class_c_camera.html", "class_c_camera" ],
+    [ "CCameraOutput", "class_c_camera_output.html", "class_c_camera_output" ],
+    [ "Coin", "struct_coin.html", "struct_coin" ],
+    [ "ColorProfile", "struct_color_profile.html", "struct_color_profile" ],
+    [ "ColorTree", "struct_color_tree.html", "struct_color_tree" ],
+    [ "GfxProgram", "class_gfx_program.html", "class_gfx_program" ],
+    [ "GfxShader", "class_gfx_shader.html", "class_gfx_shader" ],
+    [ "GfxTexture", "class_gfx_texture.html", "class_gfx_texture" ],
+    [ "Hash", "struct_hash.html", "struct_hash" ],
+    [ "HuffmanTree", "struct_huffman_tree.html", "struct_huffman_tree" ],
+    [ "LodePNGColorMode", "struct_lode_p_n_g_color_mode.html", "struct_lode_p_n_g_color_mode" ],
+    [ "LodePNGCompressSettings", "struct_lode_p_n_g_compress_settings.html", "struct_lode_p_n_g_compress_settings" ],
+    [ "LodePNGDecoderSettings", "struct_lode_p_n_g_decoder_settings.html", "struct_lode_p_n_g_decoder_settings" ],
+    [ "LodePNGDecompressSettings", "struct_lode_p_n_g_decompress_settings.html", "struct_lode_p_n_g_decompress_settings" ],
+    [ "LodePNGEncoderSettings", "struct_lode_p_n_g_encoder_settings.html", "struct_lode_p_n_g_encoder_settings" ],
+    [ "LodePNGInfo", "struct_lode_p_n_g_info.html", "struct_lode_p_n_g_info" ],
+    [ "LodePNGState", "struct_lode_p_n_g_state.html", "struct_lode_p_n_g_state" ],
+    [ "LodePNGTime", "struct_lode_p_n_g_time.html", "struct_lode_p_n_g_time" ],
+    [ "MMAL_PARAM_COLOURFX_T", "struct_m_m_a_l___p_a_r_a_m___c_o_l_o_u_r_f_x___t.html", "struct_m_m_a_l___p_a_r_a_m___c_o_l_o_u_r_f_x___t" ],
+    [ "MMAL_PARAM_THUMBNAIL_CONFIG_T", "struct_m_m_a_l___p_a_r_a_m___t_h_u_m_b_n_a_i_l___c_o_n_f_i_g___t.html", "struct_m_m_a_l___p_a_r_a_m___t_h_u_m_b_n_a_i_l___c_o_n_f_i_g___t" ],
+    [ "PARAM_FLOAT_RECT_T", "struct_p_a_r_a_m___f_l_o_a_t___r_e_c_t___t.html", "struct_p_a_r_a_m___f_l_o_a_t___r_e_c_t___t" ],
+    [ "RASPICAM_CAMERA_PARAMETERS", "struct_r_a_s_p_i_c_a_m___c_a_m_e_r_a___p_a_r_a_m_e_t_e_r_s.html", "struct_r_a_s_p_i_c_a_m___c_a_m_e_r_a___p_a_r_a_m_e_t_e_r_s" ],
+    [ "ThreadPool", "struct_thread_pool.html", "struct_thread_pool" ],
+    [ "ucvector", "structucvector.html", "structucvector" ],
+    [ "uivector", "structuivector.html", "structuivector" ]
+];

@@ -6,6 +6,7 @@
 #include <assert.h>
 #include <unistd.h>
 #include <iostream>
+#include <vector>
 #include "bcm_host.h"
 #include "graphics.h"
 
@@ -24,32 +25,35 @@ GfxShader GSimpleVS;
 GfxShader GSimpleFS;
 GfxShader GYUVFS;
 GfxShader GBlurFS;
-GfxShader GSimpleSobelFS;
 GfxShader GSobelFS;
 GfxShader GWindowFS;
 GfxShader GHarrisFS;
 GfxShader GNonMaxSupFS;
 
-GfxShader GPlusFS;
-GfxShader GDiffFS;
+GfxShader GPlusDiffFS;
+GfxShader GSimpleSobelFS;
+GfxShader GGradientFS;
 GfxShader GMultiFS;
 
 // Define GL Program
 GfxProgram GSimpleProg;
 GfxProgram GYUVProg;
 GfxProgram GBlurProg;
-GfxProgram GSimpleSobelProg;
 GfxProgram GSobelProg;
 GfxProgram GWindowProg;
 GfxProgram GHarrisProg;
 GfxProgram GNonMaxSupProg;
 
-GfxProgram GPlusProg;
-GfxProgram GDiffProg;
+GfxProgram GPlusDiffProg;
+GfxProgram GSimpleSobelProg;
+GfxProgram GGradientProg;
 GfxProgram GMultiProg;
 
 GLuint GQuadVertexBuffer;
 
+/**
+ * Init OpenGL, load shaders and shader programs
+ */
 void InitGraphics()
 {
 	bcm_host_init();
@@ -156,29 +160,28 @@ void InitGraphics()
 	GYUVFS.LoadFragmentShader("FragmentShader/yuvfragshader.glsl");
 	GBlurFS.LoadFragmentShader("FragmentShader/blurfragshader.glsl");
 	GSimpleSobelFS.LoadFragmentShader("FragmentShader/simplesobelfragshader.glsl");
-	GSobelFS.LoadFragmentShader("FragmentShader/sobelfragshader.glsl");
 	GWindowFS.LoadFragmentShader("FragmentShader/windowfragshader.glsl");
 	GHarrisFS.LoadFragmentShader("FragmentShader/harrisfragshader.glsl");
 	GNonMaxSupFS.LoadFragmentShader("FragmentShader/nonmaxsupfragshader_visual.glsl");
 
-	GPlusFS.LoadFragmentShader("FragmentShader/plusfragshader.glsl");
-	GDiffFS.LoadFragmentShader("FragmentShader/difffragshader.glsl");
+	GPlusDiffFS.LoadFragmentShader("FragmentShader/plusdifffragshader.glsl");
+	GSobelFS.LoadFragmentShader("FragmentShader/sobelfragshader.glsl");
 	GMultiFS.LoadFragmentShader("FragmentShader/multifragshader.glsl");
-
+	GGradientFS.LoadFragmentShader("FragmentShader/gradientfragshader.glsl");
 
 	// Load the GL program
 	GSimpleProg.Create(&GSimpleVS, &GSimpleFS);
 	GYUVProg.Create(&GSimpleVS, &GYUVFS);
 	GBlurProg.Create(&GSimpleVS, &GBlurFS);
-	GSimpleSobelProg.Create(&GSimpleVS, &GSimpleSobelFS);
 	GSobelProg.Create(&GSimpleVS, &GSobelFS);
 	GWindowProg.Create(&GSimpleVS, &GWindowFS);
 	GHarrisProg.Create(&GSimpleVS, &GHarrisFS);
 	GNonMaxSupProg.Create(&GSimpleVS, &GNonMaxSupFS);
 
-	GPlusProg.Create(&GSimpleVS, &GPlusFS);
-	GDiffProg.Create(&GSimpleVS, &GDiffFS);
+	GPlusDiffProg.Create(&GSimpleVS, &GPlusDiffFS);
+	GSimpleSobelProg.Create(&GSimpleVS, &GSimpleSobelFS);
 	GMultiProg.Create(&GSimpleVS, &GMultiFS);
+	GGradientProg.Create(&GSimpleVS, &GGradientFS);
 
 	check();
 
@@ -200,11 +203,11 @@ void InitGraphics()
 
 void BeginFrame()
 {
-	// Prepare viewport
+	//! Prepare viewport
 	glViewport ( 0, 0, GScreenWidth, GScreenHeight );
 	check();
 
-	// Clear the background
+	/// Clear the background
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	check();
 }
@@ -220,9 +223,9 @@ void ReleaseGraphics()
 
 }
 
-// printShaderInfoLog
-// From OpenGL Shading Language 3rd Edition, p215-216
-// Display (hopefully) useful error messages if shader fails to compile
+/** Display (hopefully) useful error messages if shader fails to compile. 
+	From OpenGL Shading Language 3rd Edition, p215-216
+*/ 
 void printShaderInfoLog(GLint shader)
 {
 	int infoLogLen = 0;
@@ -241,6 +244,11 @@ void printShaderInfoLog(GLint shader)
 	}
 }
 
+/**
+ * Load vertex shader in glsl file with filename
+ * @param filename Pointer to the glsl file name
+ * @return True if compilation successful
+ */
 bool GfxShader::LoadVertexShader(const char* filename)
 {
 	//cheeky bit of code to read the whole file into memory
@@ -280,6 +288,11 @@ bool GfxShader::LoadVertexShader(const char* filename)
 	return true;
 }
 
+/**
+ * Load fragement shader in glsl file with filename
+ * @param filename Pointer to the glsl file name
+ * @return True if compilation successful
+ */
 bool GfxShader::LoadFragmentShader(const char* filename)
 {
 	//cheeky bit of code to read the whole file into memory
@@ -319,6 +332,12 @@ bool GfxShader::LoadFragmentShader(const char* filename)
 	return true;
 }
 
+/**
+ * Create the pipeline program according to given shaders
+ * @param vertex_shader Pointer to the vertex shader
+ * @param fragment_shader Pointer to the fragement shader
+ * @return True if creation successful
+ */
 bool GfxProgram::Create(GfxShader* vertex_shader, GfxShader* fragment_shader)
 {
 	VertexShader = vertex_shader;
@@ -338,6 +357,12 @@ bool GfxProgram::Create(GfxShader* vertex_shader, GfxShader* fragment_shader)
 	return true;
 }
 
+/**
+ * Render the target texture according to the pipeline program GYUVProg
+ * @param ytexture, utexture, vtexture Pointers to the input texture
+ * @param x0, y0, x1, y1 Values to the texture size
+ * @param render_target Pointer to the target texture
+ */
 void DrawYUVTextureRect(GfxTexture* ytexture, GfxTexture* utexture, GfxTexture* vtexture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
 {
 	if (render_target)
@@ -382,6 +407,12 @@ void DrawYUVTextureRect(GfxTexture* ytexture, GfxTexture* utexture, GfxTexture* 
 	}
 }
 
+/**
+ * Render the target texture according to the pipeline program GSimpleProg
+ * @param texture Pointer to the input texture
+ * @param x0, y0, x1, y1 Values to the texture size
+ * @param render_target Pointer to the target texture
+ */
 void DrawSimpleSobelRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
 {
 	if (render_target)
@@ -391,18 +422,18 @@ void DrawSimpleSobelRect(GfxTexture* texture, float x0, float y0, float x1, floa
 		check();
 	}
 
-	glUseProgram(GSimpleProg.GetId());	check();
+	glUseProgram(GSimpleSobelProg.GetId());	check();
 
-	glUniform2f(glGetUniformLocation(GSimpleProg.GetId(), "offset"), x0, y0);
-	glUniform2f(glGetUniformLocation(GSimpleProg.GetId(), "scale"), x1 - x0, y1 - y0);
-	glUniform1i(glGetUniformLocation(GSimpleProg.GetId(), "tex"), 0);
-	glUniform2f(glGetUniformLocation(GSimpleProg.GetId(), "texelsize"), 1.f / texture->GetWidth(), 1.f / texture->GetHeight());
+	glUniform2f(glGetUniformLocation(GSimpleSobelProg.GetId(), "offset"), x0, y0);
+	glUniform2f(glGetUniformLocation(GSimpleSobelProg.GetId(), "scale"), x1 - x0, y1 - y0);
+	glUniform1i(glGetUniformLocation(GSimpleSobelProg.GetId(), "tex"), 0);
+	glUniform2f(glGetUniformLocation(GSimpleSobelProg.GetId(), "texelsize"), 1.f / texture->GetWidth(), 1.f / texture->GetHeight());
 	check();
 
 	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
 	glBindTexture(GL_TEXTURE_2D, texture->GetId());		check();
 
-	GLuint loc = glGetAttribLocation(GSimpleProg.GetId(), "vertex");
+	GLuint loc = glGetAttribLocation(GSimpleSobelProg.GetId(), "vertex");
 	glVertexAttribPointer(loc, 4, GL_FLOAT, 0, 16, 0);	check();
 	glEnableVertexAttribArray(loc);						check();
 	glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 ); 			check();
@@ -418,6 +449,12 @@ void DrawSimpleSobelRect(GfxTexture* texture, float x0, float y0, float x1, floa
 	}
 }
 
+/**
+ * Render the target texture according to the pipeline program GSobelProg
+ * @param texture Pointer to the input texture
+ * @param x0, y0, x1, y1 Values to the texture size
+ * @param render_target Pointer to the target texture
+ */
 void DrawSobelRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
 {
 	if (render_target)
@@ -438,7 +475,7 @@ void DrawSobelRect(GfxTexture* texture, float x0, float y0, float x1, float y1, 
 	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
 	glBindTexture(GL_TEXTURE_2D, texture->GetId());		check();
 
-	GLuint loc = glGetAttribLocation(GSimpleProg.GetId(), "vertex");
+	GLuint loc = glGetAttribLocation(GSobelProg.GetId(), "vertex");
 	glVertexAttribPointer(loc, 4, GL_FLOAT, 0, 16, 0);	check();
 	glEnableVertexAttribArray(loc);						check();
 	glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 ); 			check();
@@ -454,6 +491,12 @@ void DrawSobelRect(GfxTexture* texture, float x0, float y0, float x1, float y1, 
 	}
 }
 
+/**
+ * Render the target texture according to the pipeline program GBlurProg
+ * @param texture Pointer to the input texture
+ * @param x0, y0, x1, y1 Values to the texture size
+ * @param render_target Pointer to the target texture
+ */
 void DrawBlurRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
 {
 	if (render_target)
@@ -474,7 +517,7 @@ void DrawBlurRect(GfxTexture* texture, float x0, float y0, float x1, float y1, G
 	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
 	glBindTexture(GL_TEXTURE_2D, texture->GetId());	check();
 
-	GLuint loc = glGetAttribLocation(GSimpleProg.GetId(), "vertex");
+	GLuint loc = glGetAttribLocation(GBlurProg.GetId(), "vertex");
 	glVertexAttribPointer(loc, 4, GL_FLOAT, 0, 16, 0);	check();
 	glEnableVertexAttribArray(loc);	check();
 	glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 ); check();
@@ -490,6 +533,12 @@ void DrawBlurRect(GfxTexture* texture, float x0, float y0, float x1, float y1, G
 	}
 }
 
+/**
+ * Render the target texture according to the pipeline program GWindowProg
+ * @param texture Pointer to the input texture
+ * @param x0, y0, x1, y1 Values to the texture size
+ * @param render_target Pointer to the target texture
+ */
 void DrawAdd3x3WindowRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target) {
 	if (render_target)
 	{
@@ -509,7 +558,7 @@ void DrawAdd3x3WindowRect(GfxTexture* texture, float x0, float y0, float x1, flo
 	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
 	glBindTexture(GL_TEXTURE_2D, texture->GetId());	check();
 
-	GLuint loc = glGetAttribLocation(GSimpleProg.GetId(), "vertex");
+	GLuint loc = glGetAttribLocation(GWindowProg.GetId(), "vertex");
 	glVertexAttribPointer(loc, 4, GL_FLOAT, 0, 16, 0);	check();
 	glEnableVertexAttribArray(loc);	check();
 	glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 ); check();
@@ -525,6 +574,12 @@ void DrawAdd3x3WindowRect(GfxTexture* texture, float x0, float y0, float x1, flo
 	}
 }
 
+/**
+ * Render the target texture according to the pipeline program GHarrisProg
+ * @param texture Pointer to the input texture
+ * @param x0, y0, x1, y1 Values to the texture size
+ * @param render_target Pointer to the target texture
+ */
 void DrawHarrisRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target) {
 	if (render_target)
 	{
@@ -543,7 +598,7 @@ void DrawHarrisRect(GfxTexture* texture, float x0, float y0, float x1, float y1,
 	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
 	glBindTexture(GL_TEXTURE_2D, texture->GetId());	check();
 
-	GLuint loc = glGetAttribLocation(GSimpleProg.GetId(), "vertex");
+	GLuint loc = glGetAttribLocation(GHarrisProg.GetId(), "vertex");
 	glVertexAttribPointer(loc, 4, GL_FLOAT, 0, 16, 0);	check();
 	glEnableVertexAttribArray(loc);	check();
 	glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 ); check();
@@ -559,6 +614,13 @@ void DrawHarrisRect(GfxTexture* texture, float x0, float y0, float x1, float y1,
 	}
 }
 
+/**
+ * Render the target texture according to the pipeline program GNonMaxSupProg
+ * @param texture Pointer to the input texture
+ * @param x0, y0, x1, y1 Values to the texture size
+ * @param render_target Pointer to the target texture
+ * @param threshold Value of pixel supress
+ */
 void DrawNonMaxSupRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target, float threshold)
 {
 	if (render_target)
@@ -580,7 +642,7 @@ void DrawNonMaxSupRect(GfxTexture* texture, float x0, float y0, float x1, float 
 	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
 	glBindTexture(GL_TEXTURE_2D, texture->GetId());		check();
 
-	GLuint loc = glGetAttribLocation(GSimpleProg.GetId(), "vertex");
+	GLuint loc = glGetAttribLocation(GNonMaxSupProg.GetId(), "vertex");
 	glVertexAttribPointer(loc, 4, GL_FLOAT, 0, 16, 0);	check();
 	glEnableVertexAttribArray(loc);						check();
 	glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 ); 			check();
@@ -595,6 +657,13 @@ void DrawNonMaxSupRect(GfxTexture* texture, float x0, float y0, float x1, float 
 		glViewport ( 0, 0, GScreenWidth, GScreenHeight );
 	}
 }
+
+/**
+ * Render the target texture according to the pipeline program GSimpleProg
+ * @param texture Pointer to the input texture
+ * @param x0, y0, x1, y1 Values to the texture size
+ * @param render_target Pointer to the target texture
+ */
 void DrawTextureRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
 {
 	if (render_target)
@@ -630,7 +699,13 @@ void DrawTextureRect(GfxTexture* texture, float x0, float y0, float x1, float y1
 	}
 }
 
-void DrawTexturePlusRect(GfxTexture* tex_1, GfxTexture* tex_2, float x0, float y0, float x1, float y1, GfxTexture* render_target)
+/**
+ * Render the target texture according to the pipeline program GPlusDiffProg
+ * @param tex_1, tex_2 Pointers to the input textures
+ * @param x0, y0, x1, y1 Values to the texture size
+ * @param render_target Pointer to the target texture
+ */
+void DrawTexturePlusDiffRect(GfxTexture* tex_1, GfxTexture* tex_2, float x0, float y0, float x1, float y1, GfxTexture* render_target)
 {
 	if (render_target)
 	{
@@ -639,12 +714,12 @@ void DrawTexturePlusRect(GfxTexture* tex_1, GfxTexture* tex_2, float x0, float y
 		check();
 	}
 
-	glUseProgram(GPlusProg.GetId());	check();
+	glUseProgram(GPlusDiffProg.GetId());	check();
 
-	glUniform2f(glGetUniformLocation(GPlusProg.GetId(), "offset"), x0, y0);
-	glUniform2f(glGetUniformLocation(GPlusProg.GetId(), "scale"), x1 - x0, y1 - y0);
-	glUniform1i(glGetUniformLocation(GPlusProg.GetId(), "tex0"), 0);
-	glUniform1i(glGetUniformLocation(GPlusProg.GetId(), "tex1"), 1);
+	glUniform2f(glGetUniformLocation(GPlusDiffProg.GetId(), "offset"), x0, y0);
+	glUniform2f(glGetUniformLocation(GPlusDiffProg.GetId(), "scale"), x1 - x0, y1 - y0);
+	glUniform1i(glGetUniformLocation(GPlusDiffProg.GetId(), "tex0"), 0);
+	glUniform1i(glGetUniformLocation(GPlusDiffProg.GetId(), "tex1"), 1);
 	check();
 
 	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
@@ -654,7 +729,7 @@ void DrawTexturePlusRect(GfxTexture* tex_1, GfxTexture* tex_2, float x0, float y
 	glBindTexture(GL_TEXTURE_2D, tex_2->GetId());	check();
 	glActiveTexture(GL_TEXTURE0);
 
-	GLuint loc = glGetAttribLocation(GPlusProg.GetId(), "vertex");
+	GLuint loc = glGetAttribLocation(GPlusDiffProg.GetId(), "vertex");
 	glVertexAttribPointer(loc, 4, GL_FLOAT, 0, 16, 0);	check();
 	glEnableVertexAttribArray(loc);	check();
 	glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 ); check();
@@ -671,7 +746,13 @@ void DrawTexturePlusRect(GfxTexture* tex_1, GfxTexture* tex_2, float x0, float y
 	}
 }
 
-void DrawTextureDiffRect(GfxTexture* tex_1, GfxTexture* tex_2, float x0, float y0, float x1, float y1, GfxTexture* render_target)
+/**
+ * Render the target texture according to the pipeline program GGradientProg
+ * @param texture Pointer to the input texture
+ * @param x0, y0, x1, y1 Values to the texture size
+ * @param render_target Pointer to the target texture
+ */
+void DrawGradientRect(GfxTexture* texture, float x0, float y0, float x1, float y1, GfxTexture* render_target)
 {
 	if (render_target)
 	{
@@ -680,29 +761,24 @@ void DrawTextureDiffRect(GfxTexture* tex_1, GfxTexture* tex_2, float x0, float y
 		check();
 	}
 
-	glUseProgram(GDiffProg.GetId());	check();
+	glUseProgram(GGradientProg.GetId());	check();
 
-	glUniform2f(glGetUniformLocation(GDiffProg.GetId(), "offset"), x0, y0);
-	glUniform2f(glGetUniformLocation(GDiffProg.GetId(), "scale"), x1 - x0, y1 - y0);
-	glUniform1i(glGetUniformLocation(GDiffProg.GetId(), "tex0"), 0);
-	glUniform1i(glGetUniformLocation(GDiffProg.GetId(), "tex1"), 1);
+	glUniform2f(glGetUniformLocation(GGradientProg.GetId(), "offset"), x0, y0);
+	glUniform2f(glGetUniformLocation(GGradientProg.GetId(), "scale"), x1 - x0, y1 - y0);
+	glUniform1i(glGetUniformLocation(GGradientProg.GetId(), "tex"), 0);
+	glUniform2f(glGetUniformLocation(GGradientProg.GetId(), "texelsize"), 1.f / texture->GetWidth(), 1.f / texture->GetHeight());
 	check();
 
 	glBindBuffer(GL_ARRAY_BUFFER, GQuadVertexBuffer);	check();
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, tex_1->GetId());	check();
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, tex_2->GetId());	check();
-	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture->GetId());		check();
 
-	GLuint loc = glGetAttribLocation(GDiffProg.GetId(), "vertex");
+	GLuint loc = glGetAttribLocation(GGradientProg.GetId(), "vertex");
 	glVertexAttribPointer(loc, 4, GL_FLOAT, 0, 16, 0);	check();
-	glEnableVertexAttribArray(loc);	check();
-	glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 ); check();
+	glEnableVertexAttribArray(loc);						check();
+	glDrawArrays ( GL_TRIANGLE_STRIP, 0, 4 ); 			check();
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-
 	if (render_target)
 	{
 		//glFinish();	check();
@@ -712,6 +788,12 @@ void DrawTextureDiffRect(GfxTexture* tex_1, GfxTexture* tex_2, float x0, float y
 	}
 }
 
+/**
+ * Render the target texture according to the pipeline program GMultiProg
+ * @param tex_1, tex_2 Pointers to the input textures
+ * @param x0, y0, x1, y1 Values to the texture size
+ * @param render_target Pointer to the target texture
+ */
 void DrawTextureMultiRect(GfxTexture* tex_1, GfxTexture* tex_2, float x0, float y0, float x1, float y1, GfxTexture* render_target)
 {
 	if (render_target)
@@ -753,6 +835,11 @@ void DrawTextureMultiRect(GfxTexture* tex_1, GfxTexture* tex_2, float x0, float 
 	}
 }
 
+/**
+ * Create RGBA texture with given data
+ * @param width, height Values of frame size
+ * @param data Pointer to the frame
+ */
 bool GfxTexture::CreateRGBA(int width, int height, const void* data)
 {
 	Width = width;
@@ -771,6 +858,11 @@ bool GfxTexture::CreateRGBA(int width, int height, const void* data)
 	return true;
 }
 
+/**
+ * Create texture in greyscale with given data
+ * @param width, height Values of frame size
+ * @param data Pointer to the frame
+ */
 bool GfxTexture::CreateGreyScale(int width, int height, const void* data)
 {
 	Width = width;
@@ -789,9 +881,9 @@ bool GfxTexture::CreateGreyScale(int width, int height, const void* data)
 	return true;
 }
 
+///Create a frame buffer that points to this texture
 bool GfxTexture::GenerateFrameBuffer()
 {
-	//Create a frame buffer that points to this texture
 	glGenFramebuffers(1, &FramebufferId);
 	check();
 	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferId);
@@ -803,6 +895,7 @@ bool GfxTexture::GenerateFrameBuffer()
 	return true;
 }
 
+///Assgin frame in data to this texture
 void GfxTexture::SetPixels(const void* data)
 {
 	glBindTexture(GL_TEXTURE_2D, Id);
@@ -813,6 +906,7 @@ void GfxTexture::SetPixels(const void* data)
 	check();
 }
 
+///Save frame in this texture to file (fname)
 void SaveFrameBuffer(const char* fname)
 {
 	void* image = malloc(GScreenWidth*GScreenHeight*4);
@@ -828,8 +922,8 @@ void SaveFrameBuffer(const char* fname)
 
 }
 
-void GfxTexture::Save(const char* fname)
-{
+///Save frame in this texture to file (fname)
+void GfxTexture::Save(const char* fname) {
 	void* image = malloc(Width*Height*4);
 	glBindFramebuffer(GL_FRAMEBUFFER,FramebufferId);
 	check();
@@ -844,30 +938,14 @@ void GfxTexture::Save(const char* fname)
 	free(image);
 }
 
+///Save frame to Pointer image
 void* GfxTexture::ret_img() {
-	void* image = malloc(Width * Height * 4);
-	glBindFramebuffer(GL_FRAMEBUFFER, FramebufferId);
+	void* image = malloc(Width*Height*4);
+	glBindFramebuffer(GL_FRAMEBUFFER,FramebufferId);
 	check();
-	glReadPixels(0, 0, Width, Height, IsRGBA ? GL_RGBA : GL_LUMINANCE, GL_UNSIGNED_BYTE, image);
+	glReadPixels(0,0,Width,Height,IsRGBA ? GL_RGBA : GL_LUMINANCE, GL_UNSIGNED_BYTE, image);
 	check();
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER,0);
+
 	return image;
-}
-
-Image::Image() {}
-
-Image::~Image() {
-	free(this->img_ptr);
-}
-
-void Image::load_img(GfxTexture* tex) {
-	this->img_ptr = tex->ret_img();
-}
-
-void Image::reload_img(void* new_img_ptr) {
-	this->img_ptr = new_img_ptr;
-}
-
-void* Image::get_img_ptr() {
-	return img_ptr;
 }

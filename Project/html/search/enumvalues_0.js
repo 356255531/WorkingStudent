@@ -1,0 +1,19 @@
+var searchData=
+[
+  ['lac_5falpha',['LAC_ALPHA',['../lodepng_8h.html#a6c1234df37a6c1efb732d32d1cdb37a3a4c70d898e2d18aa86758f8d25a0e42ed',1,'lodepng.h']]],
+  ['lac_5fauto',['LAC_AUTO',['../lodepng_8h.html#a6c1234df37a6c1efb732d32d1cdb37a3a6f8a3e1ab9c544dca699cf22203ba619',1,'lodepng.h']]],
+  ['lac_5fauto_5fno_5fnibbles',['LAC_AUTO_NO_NIBBLES',['../lodepng_8h.html#a6c1234df37a6c1efb732d32d1cdb37a3a6a799fca40a1fb61736b6daf01ed91d8',1,'lodepng.h']]],
+  ['lac_5fauto_5fno_5fnibbles_5fno_5fpalette',['LAC_AUTO_NO_NIBBLES_NO_PALETTE',['../lodepng_8h.html#a6c1234df37a6c1efb732d32d1cdb37a3a4fcf12be466b681d67b253da83aa3472',1,'lodepng.h']]],
+  ['lac_5fauto_5fno_5fpalette',['LAC_AUTO_NO_PALETTE',['../lodepng_8h.html#a6c1234df37a6c1efb732d32d1cdb37a3ae4461b796aab51c7d09797a29088c266',1,'lodepng.h']]],
+  ['lac_5fno',['LAC_NO',['../lodepng_8h.html#a6c1234df37a6c1efb732d32d1cdb37a3af19251652ec489ea0a626b1d98a48396',1,'lodepng.h']]],
+  ['lct_5fgrey',['LCT_GREY',['../lodepng_8h.html#a8f763b6ae712d9802dec37019dfa0102a57b93d657f1794967620870e03643a6b',1,'lodepng.h']]],
+  ['lct_5fgrey_5falpha',['LCT_GREY_ALPHA',['../lodepng_8h.html#a8f763b6ae712d9802dec37019dfa0102a61da4464d66b2f215f7fc03c20c2418c',1,'lodepng.h']]],
+  ['lct_5fpalette',['LCT_PALETTE',['../lodepng_8h.html#a8f763b6ae712d9802dec37019dfa0102a002c3ac8ce7ee8560249f034a3949c4c',1,'lodepng.h']]],
+  ['lct_5frgb',['LCT_RGB',['../lodepng_8h.html#a8f763b6ae712d9802dec37019dfa0102a47e389fe1e3e64ed4a22964d5e151894',1,'lodepng.h']]],
+  ['lct_5frgba',['LCT_RGBA',['../lodepng_8h.html#a8f763b6ae712d9802dec37019dfa0102af31451c4b991a3b3c764e983c77fa26e',1,'lodepng.h']]],
+  ['lfs_5fbrute_5fforce',['LFS_BRUTE_FORCE',['../lodepng_8h.html#ad5215c95d5bedc9103d8e6490398254fa4cda3cf50239032689e5f5ec3c209531',1,'lodepng.h']]],
+  ['lfs_5fentropy',['LFS_ENTROPY',['../lodepng_8h.html#ad5215c95d5bedc9103d8e6490398254faa9160c3f9ed4e2a1ea3ec32e81f572a0',1,'lodepng.h']]],
+  ['lfs_5fminsum',['LFS_MINSUM',['../lodepng_8h.html#ad5215c95d5bedc9103d8e6490398254fac536539c215333def413f43c8b060b03',1,'lodepng.h']]],
+  ['lfs_5fpredefined',['LFS_PREDEFINED',['../lodepng_8h.html#ad5215c95d5bedc9103d8e6490398254fa3cea29523d6a09283fec1c24ada6fd6b',1,'lodepng.h']]],
+  ['lfs_5fzero',['LFS_ZERO',['../lodepng_8h.html#ad5215c95d5bedc9103d8e6490398254fa95592a70a6850eff5a730ab6cd0344d8',1,'lodepng.h']]]
+];

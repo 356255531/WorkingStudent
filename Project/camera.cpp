@@ -1,7 +1,7 @@
 /*
 This is wraps up the camera system in a simple StartCamera, StopCamera and ReadFrame api to read 
 data from the feed. Based on parts of raspivid, and the work done by Pierre Raus at 
-http://raufast.org/download/camcv_vid0.c to get the camera feeding into opencv. It 
+http://raufast.org/download/camcv_vid0.c to get the camera feeding into opencv. 
 */
 
 #include "camera.h"
@@ -14,9 +14,15 @@ http://raufast.org/download/camcv_vid0.c to get the camera feeding into opencv. 
 
 static CCamera* GCamera = NULL;
 
+/**
+ * Friend function and handler of CCamera, create one camera instance, singleton pattern.
+ * @param width Value to frame width in pixel
+ * @param height Value to frame height in pixel
+ * @param do_argb_conversion Bool if transforms to argb mode
+ * @return Camera instance if successful, NULL if one camera instance is already set up
+ */
 CCamera* StartCamera(int width, int height, int frame_rate, bool do_argb_conversion)
 {
-	//can't create more than one camera
 	//prevent the double initialization of GPU
 	if(GCamera != NULL)
 	{
@@ -36,6 +42,9 @@ CCamera* StartCamera(int width, int height, int frame_rate, bool do_argb_convers
 	return GCamera;
 }
 
+/**
+ * Kill a camera instance
+ */
 void StopCamera()
 {
 	if(GCamera)
@@ -194,6 +203,7 @@ MMAL_COMPONENT_T* CCamera::CreateCameraComponentAndSetupPorts()
 
 bool CCamera::Init(int width, int height, int frame_rate, bool do_argb_conversion)
 {
+
 	//init broadcom host - QUESTION: can this be called more than once??
 	bcm_host_init();
 
@@ -258,7 +268,6 @@ void CCamera::Release()
 		delete Output;
 		Output = NULL;
 	}
-	printf("fuck\n");
 	if(CameraComponent)
 		mmal_component_destroy(CameraComponent);
 
@@ -270,6 +279,12 @@ void CCamera::OnCameraControlCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *b
 	printf("Camera control callback\n");
 }
 
+/**
+ * Check if camera frame buffer is available
+ * @param out_buffer Pointer to frame
+ * @param out_buffer_size Value of frame size
+ * @return True if successful
+ */
 bool CCamera::BeginReadFrame(const void* &out_buffer, int& out_buffer_size)
 {
 	return Output ? Output->BeginReadFrame(out_buffer,out_buffer_size) : false;
@@ -279,9 +294,14 @@ bool CCamera::BeginReadFrame(const void* &out_buffer, int& out_buffer_size)
 void CCamera::EndReadFrame()
 {
 	if(Output) Output->EndReadFrame();
-
 }
 
+/**
+ * Save Frame to buffer
+ * @param buffer Pointer to frame
+ * @param buffer_size Value of max available size
+ * @return The size of frame if successful, otherwise -1
+ */
 int CCamera::ReadFrame(void* buffer, int buffer_size)
 {
 	return Output ? Output->ReadFrame(buffer,buffer_size) : -1;
@@ -421,6 +441,12 @@ void CCameraOutput::VideoBufferCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T 
 	((CCameraOutput*)port->userdata)->OnVideoBufferCallback(port,buffer);
 }
 
+/**
+ * Save Frame to buffer
+ * @param dest Pointer to frame
+ * @param dest_size Value of max available size
+ * @return The size of frame if successful, otherwise -1
+ */
 int CCameraOutput::ReadFrame(void* dest, int dest_size)
 {
 	//default result is 0 - no data available
@@ -447,6 +473,12 @@ int CCameraOutput::ReadFrame(void* dest, int dest_size)
 	return res;
 }
 
+/**
+ * Check if camera frame buffer is available
+ * @param out_buffer Pointer to frame
+ * @param out_buffer_size Value of frame size
+ * @return True if successful
+ */
 bool CCameraOutput::BeginReadFrame(const void* &out_buffer, int& out_buffer_size)
 {
 	// printf("Attempting to read camera output\n");

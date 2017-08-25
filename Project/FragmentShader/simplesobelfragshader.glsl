@@ -24,13 +24,13 @@ void main(void)
     float right_color =          texture2D( tex,
                                             tcoord + width_step).r;
 
-    float x_gradient =    abs(-1.0 * bottom_left_color + -2.0 * left_color + -1.0 * top_left_color +
-                             1.0 * bottom_right_color + 2.0 * right_color + 1.0 * top_right_color);
-    float y_gradient =    abs(-1.0 * bottom_left_color + -2.0 * bottom_color + -1.0 * bottom_right_color + 
-                            1.0 * top_left_color + 2.0 * top_color + 1.0 * top_right_color);
+    float x_gradient =    -1.0 * bottom_left_color + -2.0 * left_color + -1.0 * top_left_color +
+                             1.0 * bottom_right_color + 2.0 * right_color + 1.0 * top_right_color;
+    float y_gradient =    -1.0 * bottom_left_color + -2.0 * bottom_color + -1.0 * bottom_right_color + 
+                            1.0 * top_left_color + 2.0 * top_color + 1.0 * top_right_color;
 
-    gl_FragColor = vec4(    x_gradient,
-                            y_gradient,     
-                            0,
+    gl_FragColor = vec4(    0.5 + x_gradient / 4.0,
+                            0.5 + y_gradient / 4.0,     
+                            0, 
                             1.0);
 }

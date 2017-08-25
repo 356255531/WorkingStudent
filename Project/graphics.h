@@ -68,16 +68,6 @@ public:
     void* ret_img();
 };
 
-class Image {
-    void* img_ptr;
-public:
-    Image();
-    void load_img(GfxTexture* tex);
-    void reload_img(void* new_img_ptr);
-    void* get_img_ptr();
-    ~Image();
-};
-
 void SaveFrameBuffer(const char* fname);
 
 void DrawTextureRect(
@@ -95,14 +85,6 @@ void DrawYUVTextureRect(
     float x0, 
     float y0,
     float x1, 
-    float y1,
-    GfxTexture* render_target
-);
-void DrawSimpleSobelRect(
-    GfxTexture* texture,
-    float x0,
-    float y0,
-    float x1,
     float y1,
     GfxTexture* render_target
 );
@@ -151,7 +133,7 @@ void DrawNonMaxSupRect(
 
 
 // KLT algorithm
-void DrawTexturePlusRect(    
+void DrawTexturePlusDiffRect(    
     GfxTexture* texture_1,
     GfxTexture* texture_2,
     float x0,
@@ -160,9 +142,16 @@ void DrawTexturePlusRect(
     float y1,
     GfxTexture* render_target
 );
-void DrawTextureDiffRect(    
-    GfxTexture* texture_1,
-    GfxTexture* texture_2,
+void DrawSimpleSobelRect(
+    GfxTexture* texture,
+    float x0,
+    float y0,
+    float x1,
+    float y1,
+    GfxTexture* render_target
+);
+void DrawGradientRect(
+    GfxTexture* texture,
     float x0,
     float y0,
     float x1,

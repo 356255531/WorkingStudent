@@ -29,8 +29,12 @@ void main(void)
     float y_gradient =    abs(-1.0 * bottom_left_color + -2.0 * bottom_color + -1.0 * bottom_right_color + 
                             1.0 * top_left_color + 2.0 * top_color + 1.0 * top_right_color);
 
-    gl_FragColor = vec4(    x_gradient * x_gradient,
-                            y_gradient * y_gradient,     
-                            x_gradient * y_gradient, 
+    gl_FragColor = vec4(    x_gradient,
+                            y_gradient,     
+                            0, 
                             1.0);
+    //gl_FragColor = vec4(    x_gradient * x_gradient,
+                            //y_gradient * y_gradient,     
+                            //x_gradient * y_gradient, 
+                            //1.0);
 }
